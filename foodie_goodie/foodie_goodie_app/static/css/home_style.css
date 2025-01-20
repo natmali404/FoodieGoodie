@@ -1,3 +1,38 @@
+@import url('https://fonts.googleapis.com/css2?Roboto&display=swap'); 
+
 h1 {
     font-weight: bold;
+}
+
+header {
+    margin: 5vh;
+    text-align: center;
+}
+
+main {
+    text-align: center;
+}
+
+.usecase-button {
+    font-family: Roboto;
+    width: 20vw;
+    cursor: pointer;
+    border: 0px solid rgb(187, 204, 0);
+    font-size: 25px;
+    color: rgb(255, 255, 255);
+    padding: 10px 30px;
+    transition: 555ms;
+    box-shadow: rgba(0, 0, 0, 0.5) 2px 2px 6px;
+    border-radius: 10px 50px;
+    background: linear-gradient(90deg, rgb(151, 181, 124) 0%, rgb(47, 111, 76) 100%);
+    font-weight: 100;
+}
+
+
+.usecase-button:hover{
+        background: linear-gradient(90deg, rgb(101, 122, 82) 0%, rgb(34, 75, 52) 100%);
+} 
+
+.usecase-section {
+    margin-bottom: 3vh;
 }
