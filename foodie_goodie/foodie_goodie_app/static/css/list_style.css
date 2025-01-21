@@ -1,0 +1,121 @@
+.page-title {
+    text-align: center;
+    font-weight: bold;
+
+}
+
+.container, main {
+    margin: 0;
+    padding: 0;
+    width: 100vw;
+}
+
+header {
+    width: 100vw;
+    margin: 2em 0 0 0;
+    padding: 0;
+    display: block;
+}
+
+.element-checkbox {
+    width: 2em;
+    height: 2em;
+}
+
+.content-container {
+    display: flex;
+    width: 100%;
+    margin: 0;
+}
+
+.left {
+    /* background-color: #7b9a76; */
+    width: 70%;
+    padding: 2vw;
+}
+
+.right {
+    /* background-color: #CEE0CC; */
+    width: 30%;
+}
+
+.block {
+    padding: 2vh;
+
+}
+
+.content-text {
+    font-size: 1.3em;
+}
+
+.margin-left {
+    margin-left: 13vh;
+}
+
+.buttons {
+    display: flex;
+    flex-direction: column;
+}
+
+
+.action-button {
+    margin: 1vh 0;
+    color: rgb(255, 255, 255);
+    padding: 10px 30px;
+    transition: 555ms;
+    box-shadow: rgba(0, 0, 0, 0.5) 2px 2px 6px;
+    border-radius: 10px 50px;
+    background: linear-gradient(90deg, rgb(151, 181, 124) 0%, rgb(47, 111, 76) 100%);
+    font-weight: 100;
+    border: 0px;
+    font-size: 1.2em;
+    font-weight: bold;
+    width: 80%;
+}
+
+
+.action-button:hover{
+        background: linear-gradient(90deg, rgb(101, 122, 82) 0%, rgb(34, 75, 52) 100%);
+} 
+
+
+/* table */
+
+table.comicGreen {
+    margin: 0 auto;
+    border: 2px solid #4F7849;
+    background-color: #EEEEEE;
+    width: 80%;
+    text-align: center;
+    border-collapse: collapse;
+}
+
+table.comicGreen td, table.comicGreen th {
+    border: 1px solid #4F7849;
+    padding: 3px 2px;
+}
+
+table.comicGreen thead td {
+    font-size: 19px;
+    font-weight: bold;
+    color: #ffffff;
+}
+
+table.comicGreen tr:nth-child(even) {
+    background: #CEE0CC;
+}
+
+table.comicGreen thead {
+    font-size: 21px;
+    font-weight: bold;
+    color: #FFFFFF;
+    background: #4F7849;
+    background: -moz-linear-gradient(top, #7b9a76 0%, #60855b 66%, #4F7849 100%);
+    background: -webkit-linear-gradient(top, #7b9a76 0%, #60855b 66%, #4F7849 100%);
+    background: linear-gradient(to bottom, #7b9a76 0%, #60855b 66%, #4F7849 100%);
+    border-top: 1px solid #444444;
+}
+
+table.comicGreenthead td {
+    font-size: 21px;
+}

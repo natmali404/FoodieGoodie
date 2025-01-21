@@ -118,7 +118,7 @@ class ElementListy(models.Model):
     nazwaElementu = models.CharField(max_length=50)
     ilosc = models.FloatField()
     jednostka = models.ForeignKey(Jednostka, on_delete=models.CASCADE)
-    zaznaczony = models.BooleanField()
+    zaznaczony = models.BooleanField(default = False)
 
 ###
 

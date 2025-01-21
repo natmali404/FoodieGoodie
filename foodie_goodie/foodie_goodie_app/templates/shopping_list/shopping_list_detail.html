@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% block title %} Moje listy zakupów {% endblock %}
+{% load static %}
+<!-- This applies custom stylesheets for each module/template. -->
+{% block template_stylesheets %}
+    <link rel="stylesheet" href="{% static 'css/list_style.css' %}">
+{% endblock %}
+
+{% block content %}
+<header>
+    <h2 class="page-title">Lista zakupów</h2>
+</header>
+<main>
+    <div class="content-container">
+        <div class="left">
+            <div class="table-content">
+                
+            </div>
+            <table class="comicGreen">
+                <colgroup>
+                    <col span="1" style="width: 50%;">
+                    <col span="1" style="width: 10%;">
+                    <col span="1" style="width: 10%;">
+                    <col span="1" style="width: 10%;">
+                    <col span="1" style="width: 20%;">
+                  </colgroup>
+                <thead>
+                <tr>
+                <td>Nazwa</td>
+                <td>Ilość</td>
+                <td>Jednostka</td>
+                <td></td>
+                <td>Akcje</td>
+                </tr>
+                </tfoot>
+                <tbody>
+                    {% for element in elements %}
+                    <tr>
+                        <td>{{ element.nazwaElementu }}</td>
+                        <td>{{ element.ilosc }}</td>
+                        <td>{{ element.jednostka.nazwaJednostki }}</td>
+                        <td>
+                            <input type="checkbox" 
+                            name="element_{{ element.idElement }}" 
+                            id="element_{{ element.idElement }}" 
+                            class="element-checkbox"
+                            {% if element.zaznaczony %}checked{% endif %}>
+                        </td>
+                        <td>Usuń</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                </table>
+                <div class="block">
+                    <p class="content-text margin-left">Szybkie dodawanie</p>
+                </div>
+        </div>
+        <div class="right">
+            <div class="block">
+                <p class="content-text">Zaawansowane dodawanie składników</p>
+                <div class="buttons">
+                    <button class="action-button">Dodaj z przepisu</button>
+                    <button  class="action-button">Dodaj z jadłospisu</button>
+                </div>
+            </div>
+            <div class="block">
+                <p class="content-text">Eksport</p>
+                <div class="buttons">
+                    <button  class="action-button">Eksportuj listę</button>
+                </div>
+                
+            </div>
+
+            
+        </div>
+    </div>
+    
+    
+</main>
+{% endblock %}
