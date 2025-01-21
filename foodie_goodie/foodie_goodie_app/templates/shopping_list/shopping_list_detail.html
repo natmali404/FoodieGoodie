@@ -59,7 +59,7 @@
             <div class="block">
                 <p class="content-text">Zaawansowane dodawanie składników</p>
                 <div class="buttons">
-                    <button class="action-button">Dodaj z przepisu</button>
+                    <a href="{% url 'add_from_recipe' pk=shopping_list.pk %}"><button class="action-button" >Dodaj z przepisu</button></a>
                     <button  class="action-button">Dodaj z jadłospisu</button>
                 </div>
             </div>

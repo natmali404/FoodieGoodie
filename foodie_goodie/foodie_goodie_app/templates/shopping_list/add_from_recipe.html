@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block template_stylesheets %}
+<link rel="stylesheet" href="{% static 'css/list_style.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="centered-title">
+    <h2 class="page-title">Wybierz przepisy, z których chcesz dodać składniki:</h2>
+</div>
+
+<div class="search">
+    <input type="text" class="search-input" placeholder="Wyszukaj przepis...">
+</div>
+
+<form method="POST" action="{% url 'add_from_recipe' pk=pk %}">
+    {% csrf_token %}
+
+<div class="scrollable-panel">
+    {% for przepis in object_list %}
+    <div class="recipe-panel">
+        <img class="recipe-image" src="{% static 'img/recipe_placeholder.jpg' %}" alt="">
+        <p>{{ przepis.nazwaPrzepisu }}</p>
+        <input type="checkbox" 
+            name="selected_recipes" 
+            value="{{ przepis.idPrzepis }}" 
+            class="przepis-checkbox">
+    </div>
+    {% endfor %}
+</div>
+
+<div class="button-container">
+    <button type="submit" class="action-button">Potwierdź</button>
+</div>
+
+</form>
+
+{% endblock %}
+
+

@@ -1,0 +1,18 @@
+{% for recipe in selected_recipes %}
+<h3>{{ recipe.nazwaPrzepisu }}</h3>
+    <ul>
+        {% for ingredient in recipe.skladnik_set.all %}
+        <li>{{   ingredient.idSkladnik }}:
+            {{ ingredient.nazwaSkladnika }};
+            {{ ingredient.ilosc }};
+            {{ ingredient.jednostka.nazwaJednostki }}</li>
+        
+    {% empty %}
+        <p>Ni mo ingredientow</p>
+    {% endfor %}
+    </ul>
+    
+
+{% empty %}
+<p>Ni mo recipow</p>
+{% endfor %}

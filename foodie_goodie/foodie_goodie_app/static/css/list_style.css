@@ -14,7 +14,6 @@ header {
     width: 100vw;
     margin: 2em 0 0 0;
     padding: 0;
-    display: block;
 }
 
 .element-checkbox {
@@ -29,13 +28,15 @@ header {
 }
 
 .left {
-    /* background-color: #7b9a76; */
+    background-color: #7b9a76;
+    box-sizing: border-box;
     width: 70%;
     padding: 2vw;
 }
 
 .right {
-    /* background-color: #CEE0CC; */
+    background-color: #CEE0CC;
+    box-sizing: border-box;
     width: 30%;
 }
 
@@ -78,6 +79,74 @@ header {
         background: linear-gradient(90deg, rgb(101, 122, 82) 0%, rgb(34, 75, 52) 100%);
 } 
 
+
+
+/* add from recipe */
+
+.centered-title {
+    margin: 2vh auto;
+}
+
+.centered-title h2 {
+    text-align: center;
+    font-weight: bold;
+}
+
+
+.scrollable-panel {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    width: 60%;
+    border: 2px solid black;
+    height: 60vh;
+    margin: 0 auto;
+    padding: 1vh;
+    overflow-y: auto;
+}
+
+
+.recipe-panel {
+    border: 1px solid black;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    vertical-align: middle;
+    margin: 0.5vh;
+}
+
+.recipe-panel p {
+    font-size: 1.2em;
+    margin: 0;
+    padding: 0;
+} 
+
+.recipe-image {
+    width: 15vh;
+}
+
+.przepis-checkbox {
+    width: 2em;
+    height: 2em;
+    margin: 2vh;
+}
+
+.button-container {
+    display: flex;
+    justify-content: center;
+    margin: 2vh auto;
+    width: 50%;
+    /* align the buttons to the bottom of the screen */
+}
+
+.search {
+    margin: 2vh auto;
+    display: flex;
+    justify-content: center;
+}
+
+.search > input {
+    width: 30%;
+}
 
 /* table */
 

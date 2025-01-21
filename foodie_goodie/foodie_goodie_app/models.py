@@ -103,14 +103,15 @@ class Jednostka(models.Model):
 
 class Skladnik(models.Model):
     idSkladnik = models.AutoField(primary_key=True)
+    przepis = models.ForeignKey(Przepis, on_delete=models.CASCADE)
     nazwaSkladnika = models.CharField(max_length=50)
     ilosc = models.FloatField()
     jednostka = models.ForeignKey(Jednostka, on_delete=models.CASCADE)
 
-class SkladnikPrzepisu(models.Model):
-    idSkladnikPrzepis = models.AutoField(primary_key=True)
-    przepis = models.ForeignKey(Przepis, on_delete=models.CASCADE)
-    skladnik = models.ForeignKey(Skladnik, on_delete=models.CASCADE)
+# class SkladnikPrzepisu(models.Model):
+#     idSkladnikPrzepis = models.AutoField(primary_key=True)
+#     przepis = models.ForeignKey(Przepis, on_delete=models.CASCADE)
+#     skladnik = models.ForeignKey(Skladnik, on_delete=models.CASCADE)
 
 class ElementListy(models.Model):
     idElement = models.AutoField(primary_key=True)
