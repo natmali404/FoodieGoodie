@@ -1,6 +1,7 @@
 from django.urls import path
 from .views import main_views
 from .views.shopping_list_views import ShoppingListAllView, ShoppingListCreateView, ShoppingListDetailView, ShoppingListUpdateView, ShoppingListDeleteView, AddFromRecipeView, ConfirmIngredientsView
+from .views.forum_views import ForumAllView
 from .swagger import schema_view
 
 urlpatterns = [
@@ -17,4 +18,8 @@ urlpatterns = [
     #add from recipe and add from diet
     path('shopping-lists/<int:pk>/add-from-recipe/', AddFromRecipeView.as_view(), name='add_from_recipe'),
     path('shopping-lists/<int:pk>/confirm-ingredients/', ConfirmIngredientsView.as_view(), name='confirm_ingredients'),
+
+
+    #forum
+    path('forums/', ForumAllView.as_view(), name='forum_all'),
 ]

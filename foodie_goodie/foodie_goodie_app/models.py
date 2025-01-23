@@ -1,6 +1,5 @@
 from django.db import models
-
-from django.db import models
+from django.core.validators import FileExtensionValidator
 
 class Uzytkownik(models.Model):
     idUzytkownik = models.AutoField(primary_key=True)
@@ -55,7 +54,7 @@ class GlosyWpis(models.Model):
 
 class Forum(models.Model):
     idForum = models.AutoField(primary_key=True)
-    tytulPost = models.CharField(max_length=50)
+    tytulForum = models.CharField(max_length=50)
     uzytkownik = models.ForeignKey(Uzytkownik, on_delete=models.CASCADE)
 
     def __str__(self):
@@ -64,14 +63,18 @@ class Forum(models.Model):
 
 class Post(models.Model):
     idPost = models.AutoField(primary_key=True)
-    tytulPost = models.CharField(max_length=255)
     trescPost = models.TextField()
-    dataDodaniaPostu = models.DateField()
+    dataDodaniaPostu = models.DateTimeField(auto_now_add=True)
     forum = models.ForeignKey(Forum, on_delete=models.CASCADE, related_name="posty")
     autor = models.ForeignKey(Uzytkownik, on_delete=models.CASCADE)
+    glosy = models.IntegerField()
+    obrazek = models.ImageField(
+        upload_to='posty_obrazki/', 
+        null=True, 
+        blank=True, 
+        validators=[FileExtensionValidator(['png', 'jpg', 'jpeg', 'gif'])]
+    )
 
-    def __str__(self):
-        return self.tytulPost
 
 
 # fixed fields

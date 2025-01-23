@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %} Forum {% endblock %}
+{% load static %}
+<!-- This applies custom stylesheets for each module/template. -->
+{% block template_stylesheets %}
+<link rel="stylesheet" href="{% static 'css/forum_style.css' %}">
+{% endblock %}
+
+{% block content %}
+<h2>Przeglądaj forum</h2>
+<a href="#"><button>Utwórz nowy wątek</button></a>
+<ul>
+    {% for forum in forums %}
+        <li>
+            {{forum.tytulForum}} - autor: {{forum.uzytkownik}}
+        </li>
+    {% endfor %}
+</ul>
+{% endblock %}
