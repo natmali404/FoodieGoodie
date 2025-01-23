@@ -35,6 +35,7 @@ CREATE TABLE Wpis (
     FK_idAutor INT,
     tresc TEXT NOT NULL,
     dataDodania DATE,
+    zdjecie VARCHAR(300),
     FOREIGN KEY (FK_idAutor) REFERENCES Uzytkownik(idUzytkownik)
 );
 

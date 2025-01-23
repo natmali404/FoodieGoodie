@@ -1,0 +1,45 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Twój Profil</title>
+    <link rel="stylesheet" href="{% static 'css/natalka.css' %}">
+</head>
+<body>
+    
+    <div class="header">
+        <a href="{% url 'home' %}"><img class="logo-image" src="{% static 'img/foodie_goodie_logo.png' %}" style="max-width: 200px;"></a>
+       
+        <h1>MÓJ PROFIL</h1>
+        
+    </div>
+    <div class="buttons">
+    <a href="{% url 'home' %}" class="new-post-btn">Powrot do menu glownego</a>
+</div>
+    <div class="buttons">
+        <a href="{% url 'wpis-create' %}" class="new-post-btn">Dodaj nowy wpis</a>
+    </div>
+    <div class="container">
+        {% for wpis in wpisy %}
+        <div class="post">
+            <h2>{{ wpis.tresc|truncatechars:50 }}</h2>
+            <p>{{ wpis.tresc }}</p>
+            {% if wpis.zdjecie %}
+            
+            <img src="{{ wpis.zdjecie.url }}" alt="Zdjęcie wpisu" style="max-width: 300px;">
+        {% else %}
+            <p><em>Brak zdjęcia</em></p>
+        {% endif %}
+            <p class="date">Dodany: {{ wpis.dataDodania }}</p>
+            <div class="buttons">
+                <p>Polubienia : {{wpis.polubienia}}</p>
+                <a href = "{% url 'wpis-list' %}"> &hearts;</a> |
+                <a href="{% url 'wpis-update' wpis.pk %}">Edytuj</a> |
+                <a href="{% url 'wpis-delete' wpis.pk %}">Usuń</a> |
+            </div>
+        </div>
+        {% endfor %}
+        
+    </div>
+</body>
+</html>

@@ -1,0 +1,122 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jadłospis</title>
+    <style>
+        /* Globalne style */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9; /* Jasnoszare tło */
+            color: #333; /* Ciemnoszary tekst */
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            text-align: center;
+            color: #4CAF50; /* Zielony nagłówek */
+            margin-top: 20px;
+        }
+
+        p {
+            text-align: center;
+            font-size: 16px;
+        }
+
+        /* Styl tabeli */
+        table {
+            width: 80%;
+            margin: 20px auto;
+            border-collapse: collapse;
+            border: 1px solid #ddd;
+            background-color: #fff; /* Białe tło tabeli */
+        }
+
+        th,
+        td {
+            padding: 12px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #4CAF50; /* Zielony nagłówek tabeli */
+            color: white;
+        }
+
+        td {
+            background-color: #f2f2f2; /* Jasnoszare tło komórek */
+        }
+
+        /* Przycisk przejścia do widoku zarządzania */
+        .manage-button {
+            display: block;
+            margin: 20px auto;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            text-align: center;
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+
+        .manage-button:hover {
+            background-color: #45a049; /* Ciemniejszy zielony na hover */
+        }
+
+        /* Responsywność */
+        @media (max-width: 768px) {
+            table {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <a href="{% url 'home' %}"><img class="logo-image" src="{% static 'img/foodie_goodie_logo.png' %}" style="max-width: 200px;"></a>
+    <h1>Jadlospis {{jadlospis.nazwa}}</h1>
+    <p>Data utworzenia: {{ jadlospis.dataUtworzenia }}</p>
+    <a href="{% url 'jadlospis-list' %}" class="manage-button">Powrot</a>
+    <table>
+        <thead>
+            <tr>
+                <th>Pora dnia</th>
+                {% for dzien_id, dzien_label in dni_tygodnia %}
+                <th>{{ dzien_label }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for pora_id, pora_label in pory_dnia %}
+            <tr>
+                <td>{{ pora_label }}</td>
+                {% for dzien_id, dzien_label in dni_tygodnia %}
+                <td>
+                    <ul>
+                        {% for item in przepisy_jadlospisu %}
+                        {% if item.dzienTygodnia == dzien_id and item.godzina == pora_id %}
+                        <li>{{ item.przepis.nazwaPrzepisu }}</li>
+                        {% endif %}
+                        {% endfor %}
+                    </ul>
+                </td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Przycisk do widoku zarządzania jadłospisem -->
+    <a href="{% url 'pokaz_jadlospis' jadlospis.pk %}" class="manage-button">Zarządzaj jadłospisem</a>
+</body>
+
+</html>

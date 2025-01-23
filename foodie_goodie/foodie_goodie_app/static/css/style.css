@@ -1,0 +1,108 @@
+/* Ogólne ustawienia strony */
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f8f4; /* Jasnozielone tło */
+    color: #333;
+}
+
+/* Kontener główny */
+.container {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #ffffff; /* Białe tło */
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Nagłówek */
+h1 {
+    text-align: center;
+    color: #2e7d32; /* Ciemnozielony */
+    margin-bottom: 20px;
+}
+
+/* Przycisk dodawania */
+.btn {
+    display: inline-block;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+    margin: 10px 0;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn-primary {
+    background-color: #81c784; /* Jasnozielony */
+    color: white;
+    border: none;
+}
+
+.btn-primary:hover {
+    background-color: #66bb6a; /* Ciemniejszy jasnozielony */
+}
+
+.btn-secondary {
+    background-color: #4caf50; /* Zielony */
+    color: white;
+    border: none;
+}
+
+.btn-secondary:hover {
+    background-color: #388e3c; /* Ciemniejszy zielony */
+}
+
+.btn-danger {
+    background-color: #e57373; /* Jasnoczerwony */
+    color: white;
+    border: none;
+}
+
+.btn-danger:hover {
+    background-color: #d32f2f; /* Ciemniejszy czerwony */
+}
+
+/* Styl dla kart */
+.card-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.card {
+    background-color: #e8f5e9; /* Jasnozielone tło */
+    border: 1px solid #c8e6c9; /* Jasnozielone obramowanie */
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 15px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+    transform: scale(1.02);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.card-content h2 {
+    margin: 0;
+    color: #2e7d32; /* Ciemnozielony */
+    font-size: 1.5em;
+}
+
+.card-actions {
+    margin-top: 10px;
+    display: flex;
+    gap: 10px;
+}
+
+/* Tekst zastępczy */
+p {
+    text-align: center;
+    font-style: italic;
+    color: #757575; /* Jasnoszary */
+}

@@ -1,0 +1,26 @@
+table.meal-plan {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    background-color: #f9f9f9;
+}
+
+table.meal-plan th, table.meal-plan td {
+    border: 1px solid #ccc;
+    padding: 10px;
+    text-align: center;
+}
+
+table.meal-plan th {
+    background-color: #d8f5d8;
+}
+
+table.meal-plan td {
+    background-color: #ffffff;
+}
+
+table.meal-plan td ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}

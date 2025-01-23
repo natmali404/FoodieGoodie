@@ -1,0 +1,36 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% if form.instance.pk %}Edytuj{% else %}Dodaj{% endif %} Wpis</title>
+    <link rel="stylesheet" href="{% static 'css/create_wpis.css' %}">
+</head>
+<body>
+    <a href="{% url 'home' %}"><img class="logo-image" src="{% static 'img/foodie_goodie_logo.png' %}" style="max-width: 200px;"></a>
+       
+    <div class="form-container">
+        
+        <h1 class="form-title">{% if form.instance.pk %}Edytuj{% else %}Dodaj{% endif %} Wpis</h1>
+        
+        <form method="post" enctype="multipart/form-data" class="wpis-form">  <!-- Add enctype for file upload -->
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label for="id_tresc">Treść</label>
+                {{ form.tresc }} <!-- The field for the content -->
+            </div>
+
+            <div class="form-group">
+                <label for="id_zdjecie">Zdjęcie</label>
+                {{ form.zdjecie }} <!-- The field for uploading an image -->
+            </div>
+
+            <button type="submit" class="submit-btn">{% if form.instance.pk %}Zapisz{% else %}Dodaj{% endif %}</button>
+        </form>
+        
+        <a href="{% url 'wpis-list' %}" class="back-btn">Powrót do listy</a>
+    </div>
+</body>
+</html>

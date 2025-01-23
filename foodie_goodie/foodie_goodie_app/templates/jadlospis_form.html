@@ -1,0 +1,22 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Formularz Jadłospisu</title>
+    
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <div class="container">
+        <a href="{% url 'home' %}"><img class="logo-image" src="{% static 'img/foodie_goodie_logo.png' %}" style="max-width: 200px;"></a>
+        <h1>{% if object %}Edytuj{% else %}Dodaj nowy{% endif %} Jadłospis</h1>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary">{% if object %}Zapisz zmiany{% else %}Dodaj{% endif %}</button>
+        </form>
+        <a href="{% url 'jadlospis-list' %}" class="cancel-link">Anuluj</a>
+    </div>
+
+</body>
+</html>

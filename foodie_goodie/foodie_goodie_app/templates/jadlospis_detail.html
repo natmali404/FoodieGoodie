@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jadłospis</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid black;
+            text-align: center;
+            padding: 8px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Jadłospis na przyszły tydzień</h1>
+    <p>Data utworzenia: {{ jadlospis.dataUtworzenia }}</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Pora dnia</th>
+                {% for dzien_id, dzien_label in dni_tygodnia %}
+                    <th>{{ dzien_label }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for pora_id, pora_label in pory_dnia %}
+                <tr>
+                    <td>{{ pora_label }}</td>
+                    {% for dzien_id, dzien_label in dni_tygodnia %}
+                        <td>
+                            <ul>
+                                {% for przepis in przepisy_jadlospisu %}
+                                    {% if przepis.dzienTygodnia == dzien_id and przepis.godzina == pora_id %}
+                                        <li>{{ przepis.przepis.nazwa }}</li>
+                                    {% endif %}
+                                {% endfor %}
+                            </ul>
+                            <form method="post" action="{% url 'dodaj_przepis_do_jadlospisu' jadlospis.idJadlospis %}">
+                                {% csrf_token %}
+                                <input type="hidden" name="dzienTygodnia" value="{{ dzien_id }}">
+                                <input type="hidden" name="godzina" value="{{ pora_id }}">
+                                <button type="submit">Dodaj przepis</button>
+                            </form>
+                        </td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

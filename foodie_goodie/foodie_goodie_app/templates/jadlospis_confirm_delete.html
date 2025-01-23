@@ -1,0 +1,27 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Usuń Wpis</title>
+    <link rel="stylesheet" href="{% static 'css/natalka.css' %}">
+</head>
+<body>
+    <div class="header">
+        <h1>Usuń Jadlospis</h1>
+        <a href="{% url 'home' %}"><img class="logo-image" src="{% static 'img/foodie_goodie_logo.png' %}" style="max-width: 200px;"></a>
+    
+    </div>
+    <div class="container">
+        <div class="confirmation-container">
+            <p>Czy na pewno chcesz usunąć jaslospis? <strong>{{ jadlospis.idJadlospis }}</strong>?</p>
+            <form method="post">
+                {% csrf_token %}
+                <div class="buttons">
+                    <button type="submit" class="delete-btn">Tak, usuń</button>
+                </div>
+            </form>
+            <a href="{% url 'jadlospis-list' %}" class="cancel-link">Anuluj</a>
+        </div>
+    </div>
+</body>
+</html>

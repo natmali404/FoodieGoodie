@@ -7,11 +7,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         # user
-        uzytkownik = Uzytkownik.objects.create(
-            nazwaUzytkownika="test_user",
-            email="testuser@example.com",
-            haslo="password123"
-        )
+        uzytkownik =  Uzytkownik.objects.get(nazwaUzytkownika='Natalia') 
 
         # lists
         lista_1 = ListaZakupow.objects.create(

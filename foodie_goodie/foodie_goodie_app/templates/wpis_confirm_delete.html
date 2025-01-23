@@ -1,0 +1,29 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Usuń Wpis</title>
+    <link rel="stylesheet" href="{% static 'css/natalka.css' %}">
+</head>
+<body>
+    <div class="header">
+        <a href="{% url 'home' %}"><img class="logo-image" src="{% static 'img/foodie_goodie_logo.png' %}" style="max-width: 200px;"></a>
+    
+        <h1>Usuń Wpis</h1>
+       
+    </div>
+
+    <div class="container">
+        <div class="confirmation-container">
+            <p>Czy na pewno chcesz usunąć wpis <strong>{{ wpis.idWpis }}</strong>?</p>
+            <form method="post">
+                {% csrf_token %}
+                <div class="buttons">
+                    <button type="submit" class="delete-btn">Tak, usuń</button>
+                </div>
+            </form>
+            <a href="{% url 'wpis-list' %}" class="cancel-link">Anuluj</a>
+        </div>
+    </div>
+</body>
+</html>

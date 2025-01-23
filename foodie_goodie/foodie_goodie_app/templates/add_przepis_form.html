@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dodaj przepis</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+<body>
+    <div class="container">
+        <h1>Dodaj przepis</h1>
+        <p>Dzień tygodnia: {{ dzien }}</p>
+        <p>Pora dnia: {{ pora }}</p>
+        <form method="post">
+            {% csrf_token %}
+            <label for="przepis_id">Wybierz przepis:</label>
+            <select name="przepis_id" id="przepis_id" required>
+                {% for przepis in wszystkie_przepisy %}
+                    <option value="{{ przepis.pk }}">{{ przepis.nazwa }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit" class="btn btn-primary">Dodaj</button>
+        </form>
+    </div>
+</body>
+</html>

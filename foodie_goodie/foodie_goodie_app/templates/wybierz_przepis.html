@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wybierz przepis</title>
+</head>
+<body>
+    <h1>Wybierz przepis</h1>
+    <form method="post" action="{% url 'dodaj_przepis_do_jadlospisu' jadlospis.idJadlospis %}">
+        {% csrf_token %}
+        <input type="hidden" name="dzienTygodnia" value="{{ dzienTygodnia }}">
+        <input type="hidden" name="godzina" value="{{ godzina }}">
+
+        <label for="przepis_id">Wybierz przepis:</label>
+        <select name="przepis_id" id="przepis_id">
+            {% for przepis in przepisy %}
+                <option value="{{ przepis.id }}">{{ przepis.nazwa }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit">Dodaj</button>
+    </form>
+</body>
+</html>

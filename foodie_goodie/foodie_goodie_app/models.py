@@ -1,6 +1,7 @@
 from django.db import models
+from django.utils.timezone import now  # Import dla aktualnej daty
 
-from django.db import models
+
 
 class Uzytkownik(models.Model):
     idUzytkownik = models.AutoField(primary_key=True)
@@ -34,11 +35,14 @@ class UprawnieniaUzytkownikow(models.Model):
         unique_together = ('uprawnienia', 'uzytkownik')
 
 
+
 class Wpis(models.Model):
     idWpis = models.AutoField(primary_key=True)
     autor = models.ForeignKey(Uzytkownik, on_delete=models.CASCADE, related_name="wpisy")
     tresc = models.TextField()
-    dataDodania = models.DateField()
+    dataDodania = models.DateTimeField(default=now)
+    zdjecie = models.ImageField(upload_to='zdjecia/', blank=True, null=True) 
+    polubienia = models.IntegerField(default=0)
 
     def __str__(self):
         return f"Wpis {self.idWpis}"
@@ -181,3 +185,47 @@ class ListyZDietami(models.Model):
 
     class Meta:
         unique_together = ('lista', 'kategoria')
+
+
+class Jadlospis(models.Model):
+    idJadlospis = models.AutoField(primary_key=True)
+    nazwa = models.CharField(max_length=100)
+    autor = models.ForeignKey(Uzytkownik, on_delete=models.CASCADE, related_name="jadlospisy")
+    dataUtworzenia = models.DateField(default=now)
+
+    def __str__(self):
+        return f"Jadlospis {self.idJadlospis} - {self.autor.nazwaUzytkownika}"
+
+
+class JadlospisPrzepis(models.Model):
+    DZIEŃ_TYGODNIA_CHOICES = [
+        (0, "Poniedziałek"),
+        (1, "Wtorek"),
+        (2, "Środa"),
+        (3, "Czwartek"),
+        (4, "Piątek"),
+        (5, "Sobota"),
+        (6, "Niedziela"),
+    ]
+    PORA_DNIA_CHOICES =[
+        (0, "Sniadanie"),
+        (1, "Lunch"),
+        (2, "Obiad"),
+        (3, "Podwieczorek"),
+        (4, "Kolacja"),
+    ]
+
+    idJadlospisPrzepis = models.AutoField(primary_key=True)
+    jadlospis = models.ForeignKey(Jadlospis, on_delete=models.CASCADE, related_name="przepisy")
+    przepis = models.ForeignKey(Przepis, on_delete=models.CASCADE)
+    dzienTygodnia = models.IntegerField(choices=DZIEŃ_TYGODNIA_CHOICES)
+    godzina = models.IntegerField(choices=PORA_DNIA_CHOICES)
+
+
+    class Meta:
+        unique_together = ('jadlospis', 'przepis', 'dzienTygodnia', 'godzina')
+
+    def __str__(self):
+        dzien = dict(self.DZIEŃ_TYGODNIA_CHOICES).get(self.dzienTygodnia, "Nieznany dzień")
+        godz = dict(self.PORA_DNIA_CHOICES).get(self.PORA_DNIA_CHOICES, "Nieznana pora dnia")
+        return f"{self.przepis.nazwaPrzepisu} - {dzien} {godz}"

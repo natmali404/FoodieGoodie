@@ -1,0 +1,26 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edytuj Wpis</title>
+    <link rel="stylesheet" href="{% static 'css/create_wpis.css' %}">
+</head>
+<body>
+    <div class="header">
+        <h1>Edytuj Wpis</h1>
+    </div>
+    
+    <div class="container">
+        <form method="post" enctype="multipart/form-data"> <!-- Add enctype -->
+            {% csrf_token %}
+            <div class="form-container">
+                {{ form.as_p }}
+                <div class="buttons">
+                    <button type="submit" class="submit-btn">Zapisz</button>
+                </div>
+            </div>
+        </form>
+        <a href="{% url 'wpis-list' %}" class="back-link">Powrót do listy</a>
+    </div>
+</body>
+</html>

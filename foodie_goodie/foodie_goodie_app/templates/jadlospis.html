@@ -1,0 +1,273 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jadłospis</title>
+    <style>
+        /* Globalne style */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9; /* Jasnoszare tło */
+            color: #333; /* Ciemnoszary tekst */
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            text-align: center;
+            color: #4CAF50; /* Zielony nagłówek */
+            margin-top: 20px;
+        }
+
+        p {
+            text-align: center;
+            font-size: 16px;
+        }
+
+        /* Styl tabeli */
+        table {
+            width: 80%;
+            margin: 20px auto;
+            border-collapse: collapse;
+            border: 1px solid #ddd;
+            background-color: #fff; /* Białe tło tabeli */
+        }
+
+        th,
+        td {
+            padding: 12px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #4CAF50; /* Zielony nagłówek tabeli */
+            color: white;
+        }
+
+        td {
+            background-color: #f2f2f2; /* Jasnoszare tło komórek */
+        }
+
+        /* Przycisk dodawania przepisu */
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            font-size: 14px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #45a049; /* Ciemniejszy zielony na hover */
+        }
+
+        /* Przycisk usuwania przepisu */
+        .remove-przepis {
+            background-color: #f44336;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            font-size: 12px;
+            cursor: pointer;
+            border-radius: 4px;
+            margin-top: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .remove-przepis:hover {
+            background-color: #e53935; /* Ciemniejszy czerwony na hover */
+        }
+        .back-button {
+            display: inline-block;
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            margin: 10px auto;
+            font-size: 14px;
+            transition: background-color 0.3s;
+        }
+
+        .back-button:hover {
+            background-color: #45a049;
+        }
+
+        /* Formularz dodawania przepisu */
+        .add-przepis-form {
+            background-color: #ffffff;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-top: 15px;
+        }
+
+        .add-przepis-form select,
+        .add-przepis-form button {
+            padding: 8px;
+            margin-top: 10px;
+            font-size: 14px;
+            width: 100%;
+        }
+
+        /* Styl listy przepisu */
+        ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        li {
+            padding: 5px 0;
+            font-size: 16px;
+            color: #333;
+        }
+
+        /* Responsywność */
+        @media (max-width: 768px) {
+            table {
+                width: 100%;
+            }
+
+            .add-przepis-form select,
+            .add-przepis-form button {
+                width: 100%;
+            }
+        }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> <!-- Załaduj jQuery -->
+</head>
+
+<body>
+    <a href="{% url 'home' %}"><img class="logo-image" src="{% static 'img/foodie_goodie_logo.png' %}" style="max-width: 200px;"></a>
+
+    <h1>Jadłospis {{jadlospis.nazwa}}</h1>
+    <p>Data utworzenia: {{ jadlospis.dataUtworzenia }}</p>
+    <a href="{% url 'szczegoly_jadlospisu' jadlospis.pk %}" class="back-button">Powrót</a>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Pora dnia</th>
+                {% for dzien_id, dzien_label in dni_tygodnia %}
+                <th>{{ dzien_label }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+        {% for pora_id, pora_label in pory_dnia %}
+        <tr>
+            <td>{{ pora_label }}</td>
+            {% for dzien_id, dzien_label in dni_tygodnia %}
+            <td id="{{ dzien_id }}-{{ pora_id }}">
+                <!-- Wyświetl przepisy -->
+                <ul>
+                    {% for item in przepisy_jadlospisu %}
+                    {% if item.dzienTygodnia == dzien_id and item.godzina == pora_id %}
+                    <li>{{ item.przepis.nazwaPrzepisu }}</li>
+                    <button class="remove-przepis" data-przepis-id="{{ item.przepis.idPrzepis }}" data-dzien="{{ item.dzienTygodnia }}" data-godzina="{{ item.godzina }}">
+                    Usuń</button>
+                    {% endif %}
+                    {% endfor %}
+                </ul>
+
+                <!-- Formularz do dodawania przepisu -->
+                <form class="add-przepis-form" method="post" data-dzien="{{ dzien_id }}" data-godzina="{{ pora_id }}" data-row-id="{{ dzien_id }}-{{ pora_id }}">
+                    {% csrf_token %}
+                    <input type="hidden" name="dzienTygodnia" value="{{ dzien_id }}">
+                    <input type="hidden" name="godzina" value="{{ pora_id }}">
+                    <label for="przepis">Wybierz przepis:</label>
+                    <select name="przepis" required>
+                        <option value="">-- Wybierz przepis --</option>
+                        {% for przepis in przepisy %}
+                        <option value="{{ przepis.idPrzepis }}">{{ przepis.nazwaPrzepisu }}</option>
+                        {% endfor %}
+                    </select>
+                    <button type="submit">Dodaj przepis</button>
+                </form>
+            </td>
+            {% endfor %}
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <script>
+        // Funkcja do dodawania przepisu
+        $('.add-przepis-form').on('submit', function (e) {
+            e.preventDefault(); // Zapobiega domyślnej akcji (wysyłanie formularza)
+
+            var form = $(this);
+            var formData = form.serialize(); // Zbiera dane z formularza
+            var rowId = form.data('row-id'); // Identyfikator wiersza (dzień + godzina)
+
+            $.ajax({
+                url: "{% url 'dodaj_przepis_do_jadlospisu' jadlospis_id=jadlospis.idJadlospis %}",
+                type: "POST",
+                data: formData,
+                success: function (response) {
+                    if (response.przepis_nazwa) {
+                        alert("Przepis został dodany!");
+
+                        // Dynamiczne odświeżenie zawartości wiersza tabeli
+                        var cell = $('#' + rowId); // Pobierz komórkę tabeli
+                        // Dodaj przepis do listy w komórce
+                        cell.find('ul').append(`<li>${response.przepis_nazwa}</li>`);
+                    } else {
+                        alert("Wystąpił problem: brak nazwy przepisu w odpowiedzi.");
+                    }
+                },
+                error: function (response) {
+                    console.log(response); // Sprawdzamy, co wraca w przypadku błędu
+                    alert("Wystąpił problem podczas dodawania przepisu.");
+                }
+            });
+        });
+
+        // Usuwanie przepisu
+        $('.remove-przepis').on('click', function (e) {
+            e.preventDefault(); // Zapobiega domyślnej akcji (np. przekierowaniu)
+
+            var button = $(this);
+            var przepisId = button.data('przepis-id');
+            var dzienTygodnia = button.data('dzien'); // Pobierz dzień tygodnia z przycisku
+            var godzina = button.data('godzina'); // Pobierz godzinę z przycisku
+
+            $.ajax({
+                url: "{% url 'usun_przepis_z_jadlospisu' jadlospis_id=jadlospis.idJadlospis %}",
+                type: "POST",
+                data: {
+                    'przepis_id': przepisId,
+                    'dzienTygodnia': dzienTygodnia,
+                    'godzina': godzina,
+                    'csrfmiddlewaretoken': '{{ csrf_token }}' // Dodaj token CSRF
+                },
+                success: function (response) {
+                    alert("Przepis został usunięty!");
+
+                    // Znajdź odpowiednią komórkę tabeli i usuń przepis z widoku
+                    var row = $('#' + dzienTygodnia + '-' + godzina); // Znajdź komórkę z tabeli
+                    row.find('li').each(function () {
+                        if ($(this).text() == response.przepis_nazwa) { // Sprawdź, czy tekst przepisu pasuje
+                            $(this).remove(); // Usuń przepis z listy
+                            button.remove(); // Usuń przycisk "Usuń"
+                        }
+                    });
+                },
+                error: function (response) {
+                    console.log(response); // Sprawdzamy, co wraca w przypadku błędu
+                    alert("Wystąpił problem podczas usuwania przepisu.");
+                }
+            });
+        });
+
+    </script>
+</body>
+
+</html>

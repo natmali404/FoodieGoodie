@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Szczegóły Wpisu</title>
+</head>
+<body>
+    <h1>Wpis {{ wpis.idWpis }}</h1>
+    <p><strong>Autor:</strong> {{ wpis.autor }}</p>
+    <p><strong>Treść:</strong> {{ wpis.tresc }}</p>
+    <p><strong>Data dodania:</strong> {{ wpis.dataDodania }}</p>
+    {% if wpis.zdjecie %}
+        <p><strong>Zdjęcie:</strong></p>
+        <img src="{{ wpis.zdjecie.url }}" alt="Zdjęcie wpisu" style="max-width: 300px;">
+    {% else %}
+        <p><em>Brak zdjęcia</em></p>
+    {% endif %}
+    <a href="{% url 'wpis-update' wpis.pk %}">Edytuj</a> |
+    <a href="{% url 'wpis-delete' wpis.pk %}">Usuń</a> |
+    <br><br>
+    <a href="{% url 'wpis-list' %}">Powrót do listy</a>
+</body>
+</html>

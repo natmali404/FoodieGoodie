@@ -1,0 +1,48 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Lista Jadłospisów</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <div class="container">
+        <a href="{% url 'home' %}"><img class="logo-image" src="{% static 'img/foodie_goodie_logo.png' %}" style="max-width: 200px;"></a>
+        <h1>Lista Jadłospisów</h1>
+        <a href="{% url 'home' %}" class="btn btn-primary">Powrot do menu glownego</a>
+        <!-- Przycisk dodawania nowego jadłospisu -->
+        <a href="{% url 'jadlospis-create' %}" class="btn btn-primary">Dodaj nowy jadłospis</a>
+    
+        <div class="card-container">
+            {% for jadlospis in jadlospisy %}
+                <div class="card" data-url="{% url 'szczegoly_jadlospisu' jadlospis.pk %}">
+                    <div class="card-content">
+                        <h2>{{ jadlospis.nazwa }}</h2>
+                    </div>
+                    <div class="card-actions">
+                        <a href="{% url 'jadlospis-update' jadlospis.pk %}" class="btn btn-secondary">Edytuj</a>
+                        <a href="{% url 'jadlospis-delete' jadlospis.pk %}" class="btn btn-danger">Usuń</a>
+                    </div>
+                </div>
+            {% empty %}
+                <p>Brak dostępnych jadłospisów.</p>
+            {% endfor %}
+        </div>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const cards = document.querySelectorAll('.card');
+    
+        cards.forEach(card => {
+            card.addEventListener('click', function () {
+                const url = card.getAttribute('data-url');
+                if (url) {
+                    window.location.href = url;
+                }
+            });
+        });
+    });
+    </script>
+</body>
+</html>
