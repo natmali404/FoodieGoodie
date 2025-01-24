@@ -1,18 +1,60 @@
-{% for recipe in selected_recipes %}
-<h3>{{ recipe.nazwaPrzepisu }}</h3>
-    <ul>
-        {% for ingredient in recipe.skladnik_set.all %}
-        <li>{{   ingredient.idSkladnik }}:
-            {{ ingredient.nazwaSkladnika }};
-            {{ ingredient.ilosc }};
-            {{ ingredient.jednostka.nazwaJednostki }}</li>
-        
-    {% empty %}
-        <p>Ni mo ingredientow</p>
-    {% endfor %}
-    </ul>
+
+
+
+
+{% extends "base.html" %}
+{% block title %} Potwierdź składniki {% endblock %}
+{% load static %}
+<!-- This applies custom stylesheets for each module/template. -->
+{% block template_stylesheets %}
+    <link rel="stylesheet" href="{% static 'css/list_style.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="centered-title">
+    <h2>Potwierdź dodawane składniki</h2>
+</div>
     
 
-{% empty %}
-<p>Ni mo recipow</p>
-{% endfor %}
+<form method="POST" action="{% url 'confirm_ingredients' pk=pk %}">
+    {% csrf_token %}
+    <div class="ingredient-list">
+        
+        <div class="recipe-cards">
+            {% for recipe in selected_recipes %}
+            <div class="recipe-card">
+                <p class="recipe-card-name">{{ recipe.nazwaPrzepisu }}</p>
+                <table class="recipe-card-details">
+                {% for ingredient in recipe.skladnik_set.all %}
+                <tr>
+                    <td>{{ ingredient.idSkladnik }} -
+                        {{ ingredient.nazwaSkladnika }}:
+                        {{ ingredient.ilosc }}
+                        {{ ingredient.jednostka.nazwaJednostki }}</td>
+                    <td><input type="checkbox" name="selected_ingredients" value="{{ ingredient.idSkladnik }}" class="recipe-card-checkbox" checked></td>
+                </tr>
+                    
+                    
+                {% empty %}
+                <p>Ni mo ingredientow</p>
+                {% endfor %}
+                </table>
+            </div>
+            {% empty %}
+            <p>Ni mo recipow</p>
+            {% endfor %}
+        </div>
+
+        <div class="button-container">
+            <!-- tu skonczylam - obsluzyc to -->
+            <button href="{% url 'shopping_list_detail' pk=pk %}" class="action-button">Powrót</button>
+            <button type="submit" class="action-button">Zapisz</button>
+            
+        </div>
+    </div>
+</form>
+            
+    
+    
+    
+{% endblock %}

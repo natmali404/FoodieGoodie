@@ -1,9 +1,10 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
-from ..models import ListaZakupow, Uzytkownik, ElementListy, Przepis, Skladnik
+from ..models import ListaZakupow, Uzytkownik, ElementListy, Przepis, Skladnik, Jednostka
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, TemplateView, View
 from ..forms.shopping_list_form import ShoppingListForm
+from ..services import add_ingredients_to_shopping_list
 
 
 # def shopping_list_all(request):
@@ -38,6 +39,7 @@ class ShoppingListDetailView(DetailView):
         shopping_list = self.get_object()
         print(ElementListy.objects.all())
         context['elements'] = ElementListy.objects.filter(lista=shopping_list)
+        context['jednostki'] = Jednostka.objects.all()
         print(context['elements'])
         return context
 
@@ -88,6 +90,10 @@ class AddFromRecipeView(ListView):
         selected_recipes = request.POST.getlist('selected_recipes')
         request.session['selected_recipes'] = selected_recipes
         print("AddFromRecipeView - selected recipes:", selected_recipes)
+        
+        
+        ##################
+        # WAZNE JAK NIE MA ZAZNACZONYCH RECIPOW TO ODSWIEZ PO PROSTU ALBO COFNIJ DO WIDOKU DETAIL!!!!
         
         pk = self.kwargs.get('pk')
         return redirect('confirm_ingredients', pk=pk)
@@ -148,21 +154,23 @@ class ConfirmIngredientsView(TemplateView):
         return context
     
     
-    # def get(self, request, *args, **kwargs):
-    #     print("ConfirmIngredientsView - get")
-    #     selected_recipes = self.request.session.get('selected_recipes', [])
-    #     print("ConfirmIngredientsView - selected recipes:", selected_recipes)
-        
-    #     pk = kwargs.get('pk')
-    #     return render(request, 'shopping_list/confirm_ingredients.html', {'pk': pk})
-    
-    
+
     
     def post(self, request, *args, **kwargs):
-        selected_recipes = request.POST.getlist('selected_recipes')
         
-        # Możesz teraz przetworzyć te dane, np. dodać składniki do listy zakupów, zapisać je itp.
-        print("Selected recipes:", selected_recipes)
-        
-        # Przykładowe przekierowanie po przetworzeniu danych:
+        #route from add_from_recipe
+        if 'selected_recipes' in request.POST:
+            selected_recipes = request.POST.getlist('selected_recipes')
+            request.session['selected_recipes'] = selected_recipes
+            return redirect('confirm_ingredients', pk=self.kwargs['pk'])
+
+        #route from confirm_ingredients
+        elif 'selected_ingredients' in request.POST:
+            pk = self.kwargs['pk']
+            selected_ingredients = request.POST.getlist('selected_ingredients')
+            add_ingredients_to_shopping_list(pk, selected_ingredients)
+            return redirect('shopping_list_detail', pk=pk)
+
         return redirect('confirm_ingredients', pk=self.kwargs['pk'])
+    
+    

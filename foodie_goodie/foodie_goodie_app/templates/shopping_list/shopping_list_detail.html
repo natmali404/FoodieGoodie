@@ -37,7 +37,7 @@
                     {% for element in elements %}
                     <tr>
                         <td>{{ element.nazwaElementu }}</td>
-                        <td>{{ element.ilosc }}</td>
+                        <td>{{ element.ilosc|floatformat:-2 }}</td>
                         <td>{{ element.jednostka.nazwaJednostki }}</td>
                         <td>
                             <input type="checkbox" 
@@ -46,13 +46,23 @@
                             class="element-checkbox"
                             {% if element.zaznaczony %}checked{% endif %}>
                         </td>
-                        <td>Usuń</td>
+                        <td><a href="#" class="delete-btn" data-id="{{element.idElement}}">Usuń</a></td>
                     </tr>
                     {% endfor %}
                 </tbody>
                 </table>
                 <div class="block">
                     <p class="content-text margin-left">Szybkie dodawanie</p>
+                    <div class="quick-add">
+                        <input type="text" id="listElementName" placeholder="Nazwa elementu">
+                        <input type="number" id="listElementAmount" placeholder="Ilość">
+                        <select id="listElementUnit">
+                            {% for jednostka in jednostki %}
+                                <option value="{{ jednostka.idJednostka }}">{{ jednostka.nazwaJednostki }}</option>
+                            {% endfor %}
+                        </select>
+                        <button id="addListElementBtn" class="action-button">Dodaj</button>
+                    </div>                    
                 </div>
         </div>
         <div class="right">
@@ -77,4 +87,12 @@
     
     
 </main>
+{% block extra_js %}
+<script>
+    const addListElementUrl = "{% url 'add_list_element' pk=shopping_list.pk %}";
+    const deleteListElementUrl = "{% url 'delete_list_element' pk=shopping_list.pk %}";
+    const updateListElementStatusUrl = "{% url 'update_list_element_status' pk=shopping_list.pk %}";
+</script>
+<script src="{% static 'js/shopping_list_handlers.js' %}"></script>
+{% endblock %}
 {% endblock %}
