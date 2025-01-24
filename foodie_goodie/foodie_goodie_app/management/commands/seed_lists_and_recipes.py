@@ -25,11 +25,12 @@ class Command(BaseCommand):
         )
 
         # units
-        jednostka_g = Jednostka.objects.create(nazwaJednostki="g")
-        jednostka_kg = Jednostka.objects.create(nazwaJednostki="kg")
-        jednostka_szt = Jednostka.objects.create(nazwaJednostki="szt")
-        jednostka_ml = Jednostka.objects.create(nazwaJednostki="ml")
-        jednostka_l = Jednostka.objects.create(nazwaJednostki="l")
+        jednostka_g = Jednostka.objects.create(nazwaJednostki="g",minimalnaWartosc=1)
+        jednostka_kg = Jednostka.objects.create(nazwaJednostki="kg",minimalnaWartosc=0.1)
+        jednostka_szt = Jednostka.objects.create(nazwaJednostki="szt",minimalnaWartosc=1)
+        jednostka_ml = Jednostka.objects.create(nazwaJednostki="ml",minimalnaWartosc=1)
+        jednostka_l = Jednostka.objects.create(nazwaJednostki="l",minimalnaWartosc=0.1)
+        jednostka_lyzka= Jednostka.objects.create(nazwaJednostki="łyżka",minimalnaWartosc=0.5)
         
         
 
@@ -40,7 +41,10 @@ class Command(BaseCommand):
             autorPrzepisu=uzytkownik,
             nazwaPrzepisu="Ciasto",
             instrukcje=["Wymieszaj składniki", "Upiecz w piekarniku przez 30 minut"],
-            dataPublikacji=date.today()
+            wartosciodzywcze = {"Węglowodany[kcl]":350,"Białko[g]":9},
+            dataPublikacji=date.today(),
+            czasprzygotowania=60,
+            porcja=4
         )
         
         skladnik_11 = Skladnik.objects.create(
@@ -60,7 +64,10 @@ class Command(BaseCommand):
             autorPrzepisu=uzytkownik,
             nazwaPrzepisu="Omlet",
             instrukcje=["Rozbij jajka", "Usmaż na patelni"],
-            dataPublikacji=date.today()
+            wartosciodzywcze = {"Węglowodany[kcl]":350,"Białko[g]":9},
+            dataPublikacji=date.today(),
+            czasprzygotowania=10,
+            porcja=2
         )
         
         
@@ -87,7 +94,10 @@ class Command(BaseCommand):
             autorPrzepisu=uzytkownik,
             nazwaPrzepisu="Zupa pomidorowa",
             instrukcje=["Gotuj pomidory", "Dodaj przyprawy", "Podawaj z makaronem"],
-            dataPublikacji=date.today()
+            wartosciodzywcze = {"Węglowodany[kcl]":350,"Białko[g]":9},
+            dataPublikacji=date.today(),
+            czasprzygotowania=60,
+            porcja=4
         )
 
         skladnik_31 = Skladnik.objects.create(

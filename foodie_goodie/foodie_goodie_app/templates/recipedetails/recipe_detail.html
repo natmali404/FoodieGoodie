@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}{{ przepis.nazwaPrzepisu }}{% endblock %}
+
+{% block content %}
+<div class="przepis-detail">
+    <h1>{{ przepis.nazwaPrzepisu }}</h1>
+    <p><strong>Autor:</strong> {{ przepis.autorPrzepisu.nazwaUzytkownika }}</p>
+    <p><strong>Data publikacji:</strong> {{ przepis.dataPublikacji }}</p>
+    <p><strong>Czas prygotowania:</strong> {{ przepis.czasprzygotowania }} min</p>
+    <p><strong>Porcja:</strong> {{ przepis.porcja }} os</p>
+
+    
+    <h3>Instrukcje</h3>
+    <ol>
+        {% for instrukcja in przepis.instrukcje %}
+        <li>{{ instrukcja }}</li>
+        {% endfor %}
+    </ol>
+    
+    <h3>Składniki</h3>
+    <ul>
+        {% for skladnik_przepisu in skladniki_przepisu %}
+        <li>{{ skladnik_przepisu.skladnik.nazwaSkladnika }}: {{ skladnik_przepisu.skladnik.ilosc }} {{ skladnik_przepisu.skladnik.jednostka.nazwaJednostki }}</li>
+        {% endfor %}
+    </ul>
+
+    <h3>Wartości odżywcze</h3>
+<table style="border-collapse: collapse; width: 40%; border: 1px solid black;">
+    <thead>
+        <tr style="border: 1px solid black; background-color: #f2f2f2;">
+            <th style="border: 1px solid black; padding: 8px;">Składnik odżywczy</th>
+            <th style="border: 1px solid black; padding: 8px;">W porcji</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for klucz, wartosc in przepis.wartosciodzywcze.items %}
+        <tr style="border: 1px solid black;">
+            <td style="border: 1px solid black; padding: 8px;">{{ klucz }}</td>
+            <td style="border: 1px solid black; padding: 8px;">{{ wartosc }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+</div>
+{% endblock %}
