@@ -2,6 +2,7 @@ from django.urls import path
 from .views import main_views
 from .views.shopping_list_views import ShoppingListAllView, ShoppingListCreateView, ShoppingListDetailView, ShoppingListUpdateView, ShoppingListDeleteView, AddFromRecipeView, ConfirmIngredientsView
 from .views.api_views import add_list_element, delete_list_element, update_list_element_status
+from .views.forum_views import ForumAllView
 from .swagger import schema_view
 
 
@@ -23,5 +24,8 @@ urlpatterns = [
     path('shopping_list/<int:pk>/add_list_element/', add_list_element, name='add_list_element'),
     path('shopping_list/<int:pk>/delete_list_element/', delete_list_element, name='delete_list_element'),
     path('shopping_list/<int:pk>/update_list_element_status/', update_list_element_status, name='update_list_element_status'),
-]
-    
+
+
+    #forum
+    path('forums/', ForumAllView.as_view(), name='forum_all'),
+    ]
