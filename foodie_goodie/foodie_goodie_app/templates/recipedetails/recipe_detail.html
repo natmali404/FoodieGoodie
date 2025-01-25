@@ -105,21 +105,13 @@
     <div class="komentarz">
         <p><strong>{{ komentarz.uzytkownik.username }}</strong> ({{ komentarz.dataKomentarza }})</p>
         <p>{{ komentarz.trescKomentarza }}</p>
-
-        {% for odpowiedz in komentarz.odpowiedzi.all %}
-            <div class="odpowiedz">
-                <p><strong>{{ odpowiedz.uzytkownik.username }}</strong> ({{ odpowiedz.dataKomentarza }})</p>
-                <p>{{ odpowiedz.trescKomentarza }}</p>
-            </div>
-        {% endfor %}
     </div>
     {% empty %}
         <p>Brak komentarzy.</p>
     {% endfor %}
 
-    <!-- Formularz do dodawania nowego komentarza -->
     <h4>Dodaj komentarz</h4>
-    <form method="POST">
+    <form method="POST" action="{% url 'addcomment' id=przepis.idPrzepis %}">
         {% csrf_token %}
         {{ form.as_p }}
         <button type="submit">Dodaj komentarz</button>
