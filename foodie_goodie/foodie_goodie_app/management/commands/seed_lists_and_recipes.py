@@ -26,7 +26,7 @@ class Command(BaseCommand):
 
         # units
         jednostka_g = Jednostka.objects.create(nazwaJednostki="g",minimalnaWartosc=1)
-        jednostka_kg = Jednostka.objects.create(nazwaJednostki="kg",minimalnaWartosc=0.1)
+        jednostka_kg = Jednostka.objects.create(nazwaJednostki="kg",minimalnaWartosc=0.01)
         jednostka_szt = Jednostka.objects.create(nazwaJednostki="szt",minimalnaWartosc=1)
         jednostka_ml = Jednostka.objects.create(nazwaJednostki="ml",minimalnaWartosc=1)
         jednostka_l = Jednostka.objects.create(nazwaJednostki="l",minimalnaWartosc=0.1)

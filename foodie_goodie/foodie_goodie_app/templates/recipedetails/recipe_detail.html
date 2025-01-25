@@ -1,14 +1,34 @@
 {% extends "base.html" %}
 
 {% block title %}{{ przepis.nazwaPrzepisu }}{% endblock %}
+{% load static %}
+
+{% block template_stylesheets %}
+<link rel="stylesheet" href="{% static 'css/recipe_detail.css' %}">
+{% endblock %}
 
 {% block content %}
+{% if error != ""  %}
+<script>
+    alert("Błąd: {{ error }}");
+</script>
+{% endif %}
+
 <div class="przepis-detail">
     <h1>{{ przepis.nazwaPrzepisu }}</h1>
     <p><strong>Autor:</strong> {{ przepis.autorPrzepisu.nazwaUzytkownika }}</p>
     <p><strong>Data publikacji:</strong> {{ przepis.dataPublikacji }}</p>
     <p><strong>Czas prygotowania:</strong> {{ przepis.czasprzygotowania }} min</p>
-    <p><strong>Porcja:</strong> {{ przepis.porcja }} os</p>
+    
+    <form method="POST" id="portion-form">
+        {% csrf_token %}
+        <p><strong>Porcja:</strong></p>
+        <select id="porcja_select" name="porcja_select" onchange="document.getElementById('portion-form').submit();">
+            {% for i in liczby %}
+            <option value="{{ i }}" {% if i == porcja %}selected{% endif %}>{{ i }} os</option>
+            {% endfor %}
+        </select>
+    </form>
 
     
     <h3>Instrukcje</h3>
@@ -21,27 +41,91 @@
     <h3>Składniki</h3>
     <ul>
         {% for skladnik_przepisu in skladniki_przepisu %}
-        <li>{{ skladnik_przepisu.skladnik.nazwaSkladnika }}: {{ skladnik_przepisu.skladnik.ilosc }} {{ skladnik_przepisu.skladnik.jednostka.nazwaJednostki }}</li>
+        <li>{{ skladnik_przepisu.nazwaSkladnika }}: {{ skladnik_przepisu.ilosc }} {{ skladnik_przepisu.jednostka.nazwaJednostki }}</li>
         {% endfor %}
     </ul>
 
     <h3>Wartości odżywcze</h3>
-<table style="border-collapse: collapse; width: 40%; border: 1px solid black;">
-    <thead>
-        <tr style="border: 1px solid black; background-color: #f2f2f2;">
-            <th style="border: 1px solid black; padding: 8px;">Składnik odżywczy</th>
-            <th style="border: 1px solid black; padding: 8px;">W porcji</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for klucz, wartosc in przepis.wartosciodzywcze.items %}
-        <tr style="border: 1px solid black;">
-            <td style="border: 1px solid black; padding: 8px;">{{ klucz }}</td>
-            <td style="border: 1px solid black; padding: 8px;">{{ wartosc }}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+    <table class="nutrition-table">
+        <thead>
+            <tr>
+                <th>Składnik odżywczy</th>
+                <th>W porcji</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for klucz, wartosc in przepis.wartosciodzywcze.items %}
+            <tr>
+                <td>{{ klucz }}</td>
+                <td>{{ wartosc }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
 
+    <h3>Ocena</h3>
+    <div class="stars">
+        <input type="radio" id="star5" name="star" value="5" {% if ocena == 5 %}checked{% endif %}>
+        <label for="star5"> Five Stars </label>
+        <input type="radio" id="star4" name="star" value="4" {% if ocena == 4 %}checked{% endif %}>
+        <label for="star4"> Four Stars </label>
+        <input type="radio" id="star3" name="star" value="3" {% if ocena == 3 %}checked{% endif %}>
+        <label for="star3"> Three Stars </label>
+        <input type="radio" id="star2" name="star" value="2" {% if ocena == 2 %}checked{% endif %}>
+        <label for="star2"> Two Stars </label>
+        <input type="radio" id="star1" name="star" value="1" {% if ocena == 1 %}checked{% endif %}>
+        <label for="star1"> One Star </label>
+      </div>
+      <script>
+            var countStars = function () {
+            var csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+            var checkedRadio = document.querySelector('.stars input:checked');
+            const starValue = checkedRadio ? checkedRadio.value : null;
+            
+            if (starValue!=null && starValue!=0) {
+                // Wykonaj POST na URL z `/stars`
+                fetch(window.location.href + "stars", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRFToken": csrfToken, // Dodaj CSRF token do nagłówka
+                    },
+                    body: JSON.stringify({ rating: starValue }), // Prześlij ocenę w treści
+                }).then(response => response.json())
+                .then(data => window.location.href = window.location.href.replace('/stars', '') )
+             }
+            };
+
+            document.querySelector('.stars').addEventListener('click', countStars)
+      </script>
+
+    <h3>Komentarze</h3>
+    {% for komentarz in komentarze %}
+    <div class="komentarz">
+        <p><strong>{{ komentarz.uzytkownik.username }}</strong> ({{ komentarz.dataKomentarza }})</p>
+        <p>{{ komentarz.trescKomentarza }}</p>
+
+        {% for odpowiedz in komentarz.odpowiedzi.all %}
+            <div class="odpowiedz">
+                <p><strong>{{ odpowiedz.uzytkownik.username }}</strong> ({{ odpowiedz.dataKomentarza }})</p>
+                <p>{{ odpowiedz.trescKomentarza }}</p>
+            </div>
+        {% endfor %}
+    </div>
+    {% empty %}
+        <p>Brak komentarzy.</p>
+    {% endfor %}
+
+    <!-- Formularz do dodawania nowego komentarza -->
+    <h4>Dodaj komentarz</h4>
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Dodaj komentarz</button>
+    </form>
+    <h3>Opcje</h3>
+
+    
 </div>
 {% endblock %}

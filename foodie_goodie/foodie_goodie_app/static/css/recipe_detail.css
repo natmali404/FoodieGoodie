@@ -1,0 +1,60 @@
+.stars {
+    background: #ffffff;
+    height: 30px;
+    width: 200px;
+    padding: 10px;
+    border-radius: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row-reverse;
+  }
+  
+  .stars input{
+    position: absolute;
+    left: -99999px;
+  }
+  
+  label {
+    width: 30px;
+    height: 30px;
+    padding: 5px;
+    color: transparent;
+  }
+  
+  label::before {
+    content: '★';
+    color: #c0c0c0;
+    font-size: 30px;
+    line-height: 30px;
+    margin-right: -100%;
+  }
+  
+  label:hover::before,
+  label:hover ~ label::before,
+  .stars input:checked ~ label::before {
+    color: #ffa500;
+  }
+
+  /* Stylizacja dla tabeli wartości odżywczych */
+.nutrition-table {
+    border-collapse: collapse;
+    width: 40%;
+    margin: 20px 0;
+    border: 1px solid black;
+}
+
+.nutrition-table thead {
+    background-color: #f2f2f2;
+}
+
+.nutrition-table th,
+.nutrition-table td {
+    border: 1px solid black;
+    padding: 8px;
+    text-align: left;
+}
+
+.nutrition-table tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
