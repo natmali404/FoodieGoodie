@@ -5,6 +5,7 @@
 
 {% block template_stylesheets %}
 <link rel="stylesheet" href="{% static 'css/recipe_detail.css' %}">
+<script src="{% static 'js/recipe_detail.js' %}" defer></script>
 {% endblock %}
 
 {% block content %}
@@ -90,47 +91,14 @@
             </button>
         </form>    
         
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
-        <script>
-           function printContent() {
-    // Pobieramy zawartość kontenera
-    var content = document.getElementById("main-content").innerHTML;
-
-    // Pobieramy zawartość całej strony
-    var originalContent = document.body.innerHTML;
-
-    // Ścieżka do CSS
-    var cssPath = "{% static 'css/style.css' %}";
-
-    // Tworzymy tymczasowy widok z CSS
-    document.body.innerHTML = `
-        <html>
-            <head>
-                <title>Drukowanie</title>
-                <link rel="stylesheet" type="text/css" href="${cssPath}">
-            </head>
-            <body>${content}</body>
-        </html>
-    `;
-
-    // Uruchamiamy drukowanie
-    window.print();
-
-    // Przywracamy oryginalną zawartość strony
-    document.body.innerHTML = originalContent;
-
-    // Opcjonalnie, odświeżamy skrypty i CSS
-    location.reload();
-}
-
-
-        </script>
+        
+      
         
         <button onclick="printContent()">Drukuj przepis</button>
 
 
-        <button>Dodaj do jadłospisu</button>
-        <button>Dodaj do listy zakupów</button>
+        <button onclick="alert('Tutaj jest przekierowanie\n Dodanie do jadłospisu nie jest częścią przypadku użycia.')">Dodaj do jadłospisu</button>
+        <button onclick="alert('Tutaj jest przekierowanie\n Dodanie do listy zakupów nie jest częścią przypadku użycia.')">Dodaj do listy zakupów</button>
     <h3>Autor:</h3>
     <div class="komentarz">
         <div class="avatar">
@@ -155,28 +123,7 @@
         <input type="radio" id="star1" name="star" value="1" {% if ocena == 1 %}checked{% endif %}>
         <label for="star1"> One Star </label>
       </div>
-      <script>
-            var countStars = function () {
-            var csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-            var checkedRadio = document.querySelector('.stars input:checked');
-            const starValue = checkedRadio ? checkedRadio.value : null;
-            
-            if (starValue!=null && starValue!=0) {
-                // Wykonaj POST na URL z `/stars`
-                fetch(window.location.href + "stars", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "X-CSRFToken": csrfToken, // Dodaj CSRF token do nagłówka
-                    },
-                    body: JSON.stringify({ rating: starValue }), // Prześlij ocenę w treści
-                }).then(response => response.json())
-                .then(data => window.location.href = window.location.href.replace('/stars', '') )
-             }
-            };
 
-            document.querySelector('.stars').addEventListener('click', countStars)
-      </script>
 
     <h3>Komentarze</h3>
         {% for komentarz in komentarze %}
