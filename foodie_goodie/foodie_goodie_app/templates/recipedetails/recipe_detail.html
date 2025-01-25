@@ -15,28 +15,38 @@
 {% endif %}
 
 <div class="przepis-detail">
-    <h1>{{ przepis.nazwaPrzepisu }}</h1>
-    <p><strong>Autor:</strong> {{ przepis.autorPrzepisu.nazwaUzytkownika }}</p>
-    <p><strong>Data publikacji:</strong> {{ przepis.dataPublikacji }}</p>
-    <p><strong>Czas prygotowania:</strong> {{ przepis.czasprzygotowania }} min</p>
+    <div class="main-content" id="main-content">
+        <div class="info-container" >
+            <div>        
+                <h1>{{ przepis.nazwaPrzepisu }}</h1>
+                       
+                <p>
+                    <span style="font-size: 0.9rem;"> Opublikowano: {{ przepis.dataPublikacji }}</span>
+                </p>
+            </div>   
+                    
+                    
+                <p>
+                    <img src="{% static 'img/time.jfif' %}" alt="Time Icon" class="icon" >
+                    <span>{{ przepis.czasprzygotowania }} min</span>
+                </p>
+                <p>
+                    <img src="{% static 'img/porcja.webp' %}" alt="Portion Icon" class="icon">
+                    <span>
+                        <form method="POST" id="portion-form">
+                            {% csrf_token %}
+                            <select id="porcja_select" name="porcja_select" onchange="document.getElementById('portion-form').submit();">
+                                {% for i in liczby %}
+                                <option value="{{ i }}" {% if i == porcja %}selected{% endif %}>{{ i }} os</option>
+                                {% endfor %}
+                            </select>
+                        </form>
+                    </span>
+                </p>
+        </div>
+             
     
-    <form method="POST" id="portion-form">
-        {% csrf_token %}
-        <p><strong>Porcja:</strong></p>
-        <select id="porcja_select" name="porcja_select" onchange="document.getElementById('portion-form').submit();">
-            {% for i in liczby %}
-            <option value="{{ i }}" {% if i == porcja %}selected{% endif %}>{{ i }} os</option>
-            {% endfor %}
-        </select>
-    </form>
-
     
-    <h3>Instrukcje</h3>
-    <ol>
-        {% for instrukcja in przepis.instrukcje %}
-        <li>{{ instrukcja }}</li>
-        {% endfor %}
-    </ol>
     
     <h3>Składniki</h3>
     <ul>
@@ -44,7 +54,12 @@
         <li>{{ skladnik_przepisu.nazwaSkladnika }}: {{ skladnik_przepisu.ilosc }} {{ skladnik_przepisu.jednostka.nazwaJednostki }}</li>
         {% endfor %}
     </ul>
-
+    <h3>Instrukcje</h3>
+    <ol>
+        {% for instrukcja in przepis.instrukcje %}
+        <li>{{ instrukcja }}</li>
+        {% endfor %}
+    </ol>
     <h3>Wartości odżywcze</h3>
     <table class="nutrition-table">
         <thead>
@@ -62,9 +77,72 @@
             {% endfor %}
         </tbody>
     </table>
-    
+    </div>
+    <div class="sidebar">
+        <form method="POST" action="{% url 'obserw' id=przepis.idPrzepis %}">
+            {% csrf_token %}
+            <button type="submit" style="width: 100%;">
+                {% if obserwowanie == True %}
+                    Przestań obserwować
+                {% else %}
+                    Obserwuj
+                {% endif %}
+            </button>
+        </form>    
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+        <script>
+           function printContent() {
+    // Pobieramy zawartość kontenera
+    var content = document.getElementById("main-content").innerHTML;
 
-    <h3>Ocena</h3>
+    // Pobieramy zawartość całej strony
+    var originalContent = document.body.innerHTML;
+
+    // Ścieżka do CSS
+    var cssPath = "{% static 'css/style.css' %}";
+
+    // Tworzymy tymczasowy widok z CSS
+    document.body.innerHTML = `
+        <html>
+            <head>
+                <title>Drukowanie</title>
+                <link rel="stylesheet" type="text/css" href="${cssPath}">
+            </head>
+            <body>${content}</body>
+        </html>
+    `;
+
+    // Uruchamiamy drukowanie
+    window.print();
+
+    // Przywracamy oryginalną zawartość strony
+    document.body.innerHTML = originalContent;
+
+    // Opcjonalnie, odświeżamy skrypty i CSS
+    location.reload();
+}
+
+
+        </script>
+        
+        <button onclick="printContent()">Drukuj przepis</button>
+
+
+        <button>Dodaj do jadłospisu</button>
+        <button>Dodaj do listy zakupów</button>
+    <h3>Autor:</h3>
+    <div class="komentarz">
+        <div class="avatar">
+            <img src="{% static 'img/user.jfif' %}" alt="Avatar użytkownika">
+        </div>
+        <div>
+             <p class="tresc"> {{ przepis.autorPrzepisu.nazwaUzytkownika }}</p>
+             <p class="autor-data">Zobacz profil</p>
+        </div>
+    </div>
+   
+    <h3>Twoja Ocena</h3>
     <div class="stars">
         <input type="radio" id="star5" name="star" value="5" {% if ocena == 5 %}checked{% endif %}>
         <label for="star5"> Five Stars </label>
@@ -101,14 +179,24 @@
       </script>
 
     <h3>Komentarze</h3>
-    {% for komentarz in komentarze %}
-    <div class="komentarz">
-        <p><strong>{{ komentarz.uzytkownik.username }}</strong> ({{ komentarz.dataKomentarza }})</p>
-        <p>{{ komentarz.trescKomentarza }}</p>
-    </div>
+        {% for komentarz in komentarze %}
+        <div class="komentarz">
+            <div class="avatar">
+                <img src="{% static 'img/user.jfif' %}" alt="Avatar użytkownika">
+            </div>
+            <div class="komentarz-tresc">
+                <p class="autor-data">
+                    <strong>{{ komentarz.uzytkownik.nazwaUzytkownika }}</strong> - {{ komentarz.dataKomentarza }}
+                </p>
+                <p class="tresc">
+                    {{ komentarz.trescKomentarza }}
+                </p>
+            </div>
+        </div>
     {% empty %}
         <p>Brak komentarzy.</p>
     {% endfor %}
+
 
     <h4>Dodaj komentarz</h4>
     <form method="POST" action="{% url 'addcomment' id=przepis.idPrzepis %}">
@@ -116,8 +204,8 @@
         {{ form.as_p }}
         <button type="submit">Dodaj komentarz</button>
     </form>
-    <h3>Opcje</h3>
 
-    
 </div>
+</div>
+
 {% endblock %}

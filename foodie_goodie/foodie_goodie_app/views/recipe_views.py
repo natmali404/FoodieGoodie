@@ -3,7 +3,7 @@ import json
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 
-from ..models import Przepis,SkladnikPrzepisu,Uzytkownik,OcenyPrzepisu,KomentarzePrzepisu
+from ..models import Przepis,SkladnikPrzepisu,Uzytkownik,OcenyPrzepisu,KomentarzePrzepisu,Obserwowanie
 from ..recalculatingAmount import recalculate
 from ..forms.comment_form import KomentarzForm
 logged_user=Uzytkownik.objects.filter(idUzytkownik=1).first()
@@ -25,6 +25,11 @@ def przepis_detail(request, id):
     liczby = range(1, 21)  # Lista liczb od 1 do 20
     porcja=przepis.porcja
     error=""
+    obserwowanie=Obserwowanie.objects.filter(przepis=przepis, uzytkownik=logged_user).first()
+    if obserwowanie:
+        obserwowanie=True
+    else:
+        obserwowanie=False
     form = KomentarzForm()
     if request.method == 'POST':
         porcja = int(request.POST.get('porcja_select'))
@@ -42,6 +47,7 @@ def przepis_detail(request, id):
         'porcja':porcja,
         'error':error,
         'ocena':ocena,
+        'obserwowanie':obserwowanie,
         'form': form
     })
 
@@ -76,4 +82,19 @@ def add_komentarz(request, id):
 
     return redirect('recipe_detail', id=przepis.idPrzepis)
     
-    
+def obserwuj_przepis(request, id):
+    przepis = Przepis.objects.get(idPrzepis=id)
+    uzytkownik = logged_user
+
+    # Sprawdź, czy użytkownik już obserwuje przepis
+    obserwacja = Obserwowanie.objects.filter(przepis=przepis, uzytkownik=uzytkownik).first()
+
+    if obserwacja:
+        # Jeśli użytkownik już obserwuje, usuń obserwację (przestań obserwować)
+        obserwacja.delete()
+    else:
+        # Jeśli użytkownik nie obserwuje, dodaj nową obserwację
+        Obserwowanie.objects.create(przepis=przepis, uzytkownik=uzytkownik)
+
+    # Przekierowanie z powrotem do strony przepisu
+    return redirect('recipe_detail', id=przepis.idPrzepis)

@@ -62,3 +62,115 @@
 form label::before {
   content: ''; 
 }
+
+/* Kontener strony */
+.przepis-detail {
+  display: flex;
+  flex-direction: row; /* Ustawienie elementów w wierszu */
+  min-height: 100vh; /* Wysokość strony */
+  margin: 0;
+  background-color: #f9f9f9;
+}
+
+
+/* Główna zawartość */
+.main-content {
+  padding: 20px;
+  background-color: #f9f9f9;
+  left: 0;
+}
+
+/* Pasek boczny */
+.sidebar {
+  width: 400px; /* Szerokość paska bocznego */
+  background-color: #7e7b7b;
+  color: white;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px; /* Odstępy między elementami */
+  position: absolute; /* Pozycjonowanie absolutne dla precyzyjnego ustawienia */
+  right: 0; /* Ustawienie paska bocznego po prawej */
+
+}
+
+/* Elementy paska bocznego */
+.sidebar .section {
+  background-color: #a19a9a;
+  padding: 15px;
+  border-radius: 8px;
+}
+
+.sidebar .section h3 {
+  margin: 0 0 10px;
+  font-size: 18px;
+}
+
+.sidebar .section p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+
+
+.komentarz {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 15px;
+    background-color: #f9f9f9;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    
+}
+
+.avatar img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-right: 15px;
+}
+
+.komentarz-tresc {
+    flex: 1;
+}
+
+.autor-data {
+    font-size: 0.9rem;
+    color: #525151;
+    margin: 0;
+}
+
+.tresc {
+    font-size: 1rem;
+    margin-top: 5px;
+    color: black;
+}
+
+
+
+
+/* Styl dla ikon */
+.icon {
+  width: 25px;  /* Dostosuj szerokość ikony */
+  height: 25px; /* Dostosuj wysokość ikony */
+  margin-right: 10px;  /* Odstęp między ikoną a tekstem */
+  vertical-align: middle;  /* Wyrównanie w pionie z tekstem */
+}
+
+/* Mały tekst dla daty */
+.small-text {
+  font-size: 0.9em; /* Zmniejsz rozmiar czcionki */
+  color: #666; /* Kolor tekstu dla daty */
+}
+
+/* Kontener dla sekcji "Data", "Czas" i "Porcja" - obok siebie */
+.info-container {
+  display: flex;
+  align-items: center;  /* Wyrównanie elementów w pionie */
+  gap: 40px;  /* Odstępy między sekcjami */
+  flex-direction: row;
+}
+
+
