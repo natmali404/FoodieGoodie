@@ -81,11 +81,18 @@ class Przepis(models.Model):
     nazwaPrzepisu = models.CharField(max_length=50)
     #skladniki = models.JSONField() <- Skladnik ma ForeignKey i trzeba to pobrac; potrzebne np do listy zakupow
     instrukcje = models.JSONField()
+    wartosciodzywcze = models.JSONField(default=dict) 
     dataPublikacji = models.DateField()
+    czasprzygotowania=models.IntegerField()
+    porcja=models.IntegerField()
 
     def __str__(self):
         return self.nazwaPrzepisu
     
+class Obserwowanie(models.Model):
+    idObserwowania = models.AutoField(primary_key=True)
+    przepis = models.ForeignKey(Przepis, on_delete=models.CASCADE)
+    uzytkownik = models.ForeignKey(Uzytkownik, on_delete=models.CASCADE)  
 
 class ListaZakupow(models.Model):
     idLista = models.AutoField(primary_key=True)
@@ -100,6 +107,7 @@ class ListaZakupow(models.Model):
 class Jednostka(models.Model):
     idJednostka = models.AutoField(primary_key=True)
     nazwaJednostki = models.CharField(max_length=5)
+    minimalnaWartosc= models.FloatField(default=0.5)
 
 class Skladnik(models.Model):
     idSkladnik = models.AutoField(primary_key=True)

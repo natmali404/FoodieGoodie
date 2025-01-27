@@ -1,0 +1,176 @@
+{% extends "base.html" %}
+
+{% block title %}{{ przepis.nazwaPrzepisu }}{% endblock %}
+{% load static %}
+
+{% block template_stylesheets %}
+<link rel="stylesheet" href="{% static 'css/recipe_detail.css' %}">
+<script src="{% static 'js/recipe_detail.js' %}" defer></script>
+{% endblock %}
+
+{% block content %}
+{% if error != ""  %}
+<script>
+    alert("Błąd: {{ error }}");
+</script>
+{% endif %}
+
+<div class="przepis-detail">
+    <div class="main-content" id="main-content">
+        <div class="info-container" >
+            <div>        
+                <h1>{{ przepis.nazwaPrzepisu }}</h1>
+                       
+                <p>
+                    <span style="font-size: 0.9rem;"> Opublikowano: {{ przepis.dataPublikacji }}</span>
+                </p>
+            </div>   
+            
+            {% if obserwowanie == True  %}
+            <img src="{% static 'img/heart.avif' %}" alt="Time Icon" class="icon" >
+            {% endif %}   
+
+            {% if srednia > 0  %}
+            <p>
+                <img src="{% static 'img/star.webp' %}" alt="Time Icon" class="icon" >
+                <span>{{ srednia }}<span>
+            </p>
+            {% else %}
+            <p>
+                <img src="{% static 'img/star.webp' %}" alt="Time Icon" class="icon" >
+                <span>brak ocen</span>
+            </p>
+            {% endif %}   
+                    
+                <p>
+                    <img src="{% static 'img/time.jfif' %}" alt="Time Icon" class="icon" >
+                    <span>{{ przepis.czasprzygotowania }} min</span>
+                </p>
+                <p>
+                    <img src="{% static 'img/porcja.webp' %}" alt="Portion Icon" class="icon">
+                    <span>
+                        <form method="POST" id="portion-form">
+                            {% csrf_token %}
+                            <select id="porcja_select" name="porcja_select" onchange="document.getElementById('portion-form').submit();">
+                                {% for i in liczby %}
+                                <option value="{{ i }}" {% if i == porcja %}selected{% endif %}>{{ i }} os</option>
+                                {% endfor %}
+                            </select>
+                        </form>
+                    </span>
+                </p>
+        </div>
+             
+    
+    
+    
+    <h3>Składniki</h3>
+    <ul>
+        {% for skladnik_przepisu in skladniki_przepisu %}
+        <li>{{ skladnik_przepisu.nazwaSkladnika }}: {{ skladnik_przepisu.ilosc }} {{ skladnik_przepisu.jednostka.nazwaJednostki }}</li>
+        {% endfor %}
+    </ul>
+    <h3>Instrukcje</h3>
+    <ol>
+        {% for instrukcja in przepis.instrukcje %}
+        <li>{{ instrukcja }}</li>
+        {% endfor %}
+    </ol>
+    <h3>Wartości odżywcze</h3>
+    <table class="nutrition-table">
+        <thead>
+            <tr>
+                <th>Składnik odżywczy</th>
+                <th>W porcji</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for klucz, wartosc in przepis.wartosciodzywcze.items %}
+            <tr>
+                <td>{{ klucz }}</td>
+                <td>{{ wartosc }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    </div>
+    <div class="sidebar">
+        <form method="POST" action="{% url 'obserw' id=przepis.idPrzepis %}">
+            {% csrf_token %}
+            <button type="submit" style="width: 100%;">
+                {% if obserwowanie == True %}
+                    Przestań obserwować
+                {% else %}
+                    Obserwuj
+                {% endif %}
+            </button>
+        </form>    
+        
+        
+      
+        
+        <button onclick="printContent()">Drukuj przepis</button>
+
+
+        <button onclick="alert('Tutaj jest przekierowanie\n Dodanie do jadłospisu nie jest częścią przypadku użycia.')">Dodaj do jadłospisu</button>
+        <button onclick="alert('Tutaj jest przekierowanie\n Dodanie do listy zakupów nie jest częścią przypadku użycia.')">Dodaj do listy zakupów</button>
+    <h3>Autor:</h3>
+    <div class="komentarz">
+        <div class="avatar">
+            <img src="{% static 'img/user.jfif' %}" alt="Avatar użytkownika">
+        </div>
+        <div>
+             <p class="tresc"> {{ przepis.autorPrzepisu.nazwaUzytkownika }}</p>
+             <p class="autor-data">Zobacz profil</p>
+        </div>
+    </div>
+   
+    <h3>Twoja Ocena</h3>
+    <div class="stars">
+        <input type="radio" id="star5" name="star" value="5" {% if ocena == 5 %}checked{% endif %}>
+        <label for="star5"> Five Stars </label>
+        <input type="radio" id="star4" name="star" value="4" {% if ocena == 4 %}checked{% endif %}>
+        <label for="star4"> Four Stars </label>
+        <input type="radio" id="star3" name="star" value="3" {% if ocena == 3 %}checked{% endif %}>
+        <label for="star3"> Three Stars </label>
+        <input type="radio" id="star2" name="star" value="2" {% if ocena == 2 %}checked{% endif %}>
+        <label for="star2"> Two Stars </label>
+        <input type="radio" id="star1" name="star" value="1" {% if ocena == 1 %}checked{% endif %}>
+        <label for="star1"> One Star </label>
+      </div>
+
+
+    <h3>Komentarze</h3>
+        {% for komentarz in komentarze %}
+        <div class="komentarz">
+            <div class="avatar">
+                <img src="{% static 'img/user.jfif' %}" alt="Avatar użytkownika">
+            </div>
+            <div class="komentarz-tresc">
+                <p class="autor-data">
+                    <strong>{{ komentarz.uzytkownik.nazwaUzytkownika }}</strong> - {{ komentarz.dataKomentarza }}
+                    {% if komentarz.uzytkownik == logged_user %}
+                    <a href="{% url 'remove_comment' komentarz.przepis.idPrzepis komentarz.idKomentarz %}" class="usun-link">Usuń</a>
+                {% endif %}
+                </p>
+                <p class="tresc">
+                    {{ komentarz.trescKomentarza }}
+                </p>
+            </div>
+        </div>
+    {% empty %}
+        <p>Brak komentarzy.</p>
+    {% endfor %}
+
+
+    <h4>Dodaj komentarz</h4>
+    <form method="POST" action="{% url 'addcomment' id=przepis.idPrzepis %}">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Dodaj komentarz</button>
+    </form>
+
+</div>
+</div>
+
+{% endblock %}
