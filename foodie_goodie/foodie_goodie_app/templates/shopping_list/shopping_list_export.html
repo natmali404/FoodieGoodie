@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista Zakupów</title>
+    <link rel="stylesheet" href="{% static 'css/list_style.css' %}">
+</head>
+<body>
+    <h2>Lista zakupów</h2>
+    <table class="comicGreen">
+        <colgroup>
+            <col style="width: 50%;">
+            <col style="width: 10%;">
+            <col style="width: 10%;">
+            <col style="width: 10%;">
+        </colgroup>
+        <thead>
+            <tr>
+                <th>Nazwa</th>
+                <th>Ilość</th>
+                <th>Jednostka</th>
+                <th>Zaznaczone</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for element in elements %}
+            <tr>
+                <td>{{ element.nazwaElementu }}</td>
+                <td>{{ element.ilosc|floatformat:-2 }}</td>
+                <td>{{ element.jednostka.nazwaJednostki }}</td>
+                <td>
+                    {% if element.zaznaczony %}
+                        ☑
+                    {% else %}
+                        ☐
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

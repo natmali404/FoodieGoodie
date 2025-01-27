@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block template_stylesheets %}
+<link rel="stylesheet" href="{% static 'css/list_style.css' %}">
+{% endblock %}
+
+{% block title %} Dodaj z jadłospisu {% endblock %}
+
+{% block content %}
+
+<div class="centered-title">
+    <h2 class="page-title">Wybierz jadłospisy, z których chcesz dodać składniki:</h2>
+</div>
+
+<div class="search">
+    <input type="text" class="search-input" placeholder="Wyszukaj jadłospis...">
+</div>
+
+<form method="POST" action="{% url 'add_from_diet' pk=pk %}">
+    {% csrf_token %}
+
+<div class="scrollable-panel">
+    {% for jadlospis in object_list %}
+    <div class="recipe-panel">
+        <p>{{ jadlospis.nazwa }}</p>
+        <input type="checkbox" 
+            name="selected_diets" 
+            value="{{ jadlospis.idJadlospis }}" 
+            class="przepis-checkbox">
+    </div>
+    {% endfor %}
+</div>
+
+<div class="button-container">
+    <button type="submit" class="action-button">Potwierdź</button>
+</div>
+
+</form>
+
+{% endblock %}
+
+

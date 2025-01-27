@@ -1,5 +1,6 @@
 from django.db import models
 from django.core.validators import FileExtensionValidator
+from django.utils.timezone import now
 
 class Uzytkownik(models.Model):
     idUzytkownik = models.AutoField(primary_key=True)
@@ -185,3 +186,48 @@ class ListyZDietami(models.Model):
 
     class Meta:
         unique_together = ('lista', 'kategoria')
+
+#diet
+
+class Jadlospis(models.Model):
+    idJadlospis = models.AutoField(primary_key=True)
+    nazwa = models.CharField(max_length=100)
+    autor = models.ForeignKey(Uzytkownik, on_delete=models.CASCADE, related_name="jadlospisy")
+    dataUtworzenia = models.DateField(default=now)
+
+    def __str__(self):
+        return f"Jadlospis {self.idJadlospis} - {self.autor.nazwaUzytkownika}"
+
+
+class JadlospisPrzepis(models.Model):
+    DZIEŃ_TYGODNIA_CHOICES = [
+        (0, "Poniedziałek"),
+        (1, "Wtorek"),
+        (2, "Środa"),
+        (3, "Czwartek"),
+        (4, "Piątek"),
+        (5, "Sobota"),
+        (6, "Niedziela"),
+    ]
+    PORA_DNIA_CHOICES =[
+        (0, "Sniadanie"),
+        (1, "Lunch"),
+        (2, "Obiad"),
+        (3, "Podwieczorek"),
+        (4, "Kolacja"),
+    ]
+
+    idJadlospisPrzepis = models.AutoField(primary_key=True)
+    jadlospis = models.ForeignKey(Jadlospis, on_delete=models.CASCADE, related_name="przepisy")
+    przepis = models.ForeignKey(Przepis, on_delete=models.CASCADE)
+    dzienTygodnia = models.IntegerField(choices=DZIEŃ_TYGODNIA_CHOICES)
+    godzina = models.IntegerField(choices=PORA_DNIA_CHOICES)
+
+
+    class Meta:
+        unique_together = ('jadlospis', 'przepis', 'dzienTygodnia', 'godzina')
+
+    def __str__(self):
+        dzien = dict(self.DZIEŃ_TYGODNIA_CHOICES).get(self.dzienTygodnia, "Nieznany dzień")
+        godz = dict(self.PORA_DNIA_CHOICES).get(self.PORA_DNIA_CHOICES, "Nieznana pora dnia")
+        return f"{self.przepis.nazwaPrzepisu} - {dzien} {godz}"

@@ -79,6 +79,10 @@ header {
         background: linear-gradient(90deg, rgb(101, 122, 82) 0%, rgb(34, 75, 52) 100%);
 } 
 
+.return-button {
+    background: linear-gradient(90deg, rgb(175, 175, 175) 0%, rgb(104, 104, 104) 100%);
+}
+
 
 
 /* add from recipe */

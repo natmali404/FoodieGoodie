@@ -1,17 +1,15 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
-from ..models import ListaZakupow, Uzytkownik, ElementListy, Przepis, Skladnik, Jednostka
+from ..models import ListaZakupow, Uzytkownik, ElementListy, Przepis, Skladnik, Jednostka, Jadlospis, JadlospisPrzepis
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, TemplateView, View
 from ..forms.shopping_list_form import ShoppingListForm
 from ..services import add_ingredients_to_shopping_list
 
+from django.http import HttpResponse
+from weasyprint import HTML, CSS
+from django.templatetags.static import static
 
-# def shopping_list_all(request):
-#     #FOR TESTING PURPOSES
-#     user = Uzytkownik.objects.get(id=1)
-#     lists = ListaZakupow.objects.filter(autor=user)
-#     return render(request, 'shopping_list/shopping_list_all.html', {'lists': lists})
 
 TEST_USER_ID = 1
 
@@ -29,11 +27,6 @@ class ShoppingListDetailView(DetailView):
     template_name = 'shopping_list/shopping_list_detail.html'
     context_object_name = 'shopping_list'
 
-    # def get_queryset(self, **kwargs):
-    #     context = super().get_context_data(**kwargs)
-    #     self.object = self.get_object()
-    #     context['elements'] = ElementListy.objects.filter(lista=self.object)
-    #     return context
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         shopping_list = self.get_object()
@@ -42,6 +35,7 @@ class ShoppingListDetailView(DetailView):
         context['jednostki'] = Jednostka.objects.all()
         print(context['elements'])
         return context
+
 
 class ShoppingListCreateView(CreateView):
     model = ListaZakupow
@@ -84,14 +78,11 @@ class AddFromRecipeView(ListView):
         print("AddFromRecipeView - pk:", context['pk'])
         return context
        
-    
     def post(self, request, *args, **kwargs):
-        
         selected_recipes = request.POST.getlist('selected_recipes')
         request.session['selected_recipes'] = selected_recipes
         print("AddFromRecipeView - selected recipes:", selected_recipes)
-        
-        
+
         ##################
         # WAZNE JAK NIE MA ZAZNACZONYCH RECIPOW TO ODSWIEZ PO PROSTU ALBO COFNIJ DO WIDOKU DETAIL!!!!
         
@@ -102,42 +93,6 @@ class AddFromRecipeView(ListView):
 #view #2 - select ingredients and confirm/refuse
 class ConfirmIngredientsView(TemplateView):
     template_name = 'shopping_list/confirm_ingredients.html'
-    
-    # def get_context_data(self, **kwargs):
-    #     print("ok")
-    #     context = super().get_context_data(**kwargs)
-    #     selected_recipes = self.request.session.get('selected_recipes', [])
-        
-    #     print("ConfirmIngredientsView - selected recipes:", selected_recipes)
-        
-    #     # context['ingredients'] = Skladnik.objects.filter(przepis__id__in=selected_recipes)
-        
-    #     pk = self.kwargs.get('pk')
-    #     context['pk'] = pk
-        
-    #     print("ConfirmIngredientsView - pk:", context['pk'])
-
-    #     return context
-    
-    
-    
-    # def get_context_data(self, **kwargs):
-    #     context = super().get_context_data(**kwargs)
-        
-    #     # Pobieranie listy wybranych przepisów z sesji
-    #     selected_recipes_ids = self.request.session.get('selected_recipes', [])
-        
-    #     # Filtrujesz składniki dla wybranych przepisów
-    #     selected_recipes = Przepis.objects.filter(id__in=selected_recipes_ids)
-        
-    #     skladniki_przepisu = SkladnikPrzepisu.objects.filter(przepis_id=przepis_id)
-        
-    #     context['selected_recipes'] = selected_recipes
-        
-    #     pk = self.kwargs.get('pk')
-    #     context['pk'] = pk
-        
-    #     return context
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -152,9 +107,6 @@ class ConfirmIngredientsView(TemplateView):
         context['selected_recipes'] = selected_recipes
         
         return context
-    
-    
-
     
     def post(self, request, *args, **kwargs):
         
@@ -174,3 +126,54 @@ class ConfirmIngredientsView(TemplateView):
         return redirect('confirm_ingredients', pk=self.kwargs['pk'])
     
     
+#add from diet
+class AddFromDietView(ListView):
+    model = Jadlospis
+    template_name = 'shopping_list/add_from_diet.html'
+    
+    def get_queryset(self):
+        return Jadlospis.objects.all()
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        
+        pk = self.kwargs.get('pk')
+        context['pk'] = pk
+        
+        print("AddFromDietView - pk:", context['pk'])
+        return context
+       
+    def post(self, request, *args, **kwargs):
+        selected_diets = request.POST.getlist('selected_diets')
+        request.session['selected_diets' ] = selected_diets
+        print("AddFromDietView - selected diets:", selected_diets)
+        
+        #get all recipes ids from selected diets
+        recipes = JadlospisPrzepis.objects.filter(jadlospis__in=selected_diets)
+        selected_recipes = [str(recipe.przepis.idPrzepis) for recipe in recipes]
+        request.session['selected_recipes' ] = selected_recipes
+        print("AddFromDietView - selected recipes:", selected_recipes)
+
+        ##################
+        # WAZNE JAK NIE MA ZAZNACZONYCH RECIPOW TO ODSWIEZ PO PROSTU ALBO COFNIJ DO WIDOKU DETAIL!!!!
+        
+        pk = self.kwargs.get('pk')
+        return redirect('confirm_ingredients', pk=pk)
+    
+    
+    
+#pdf export
+
+def lista_zakupow_pdf(request):
+    elements = ElementListy.objects.all()
+
+    html_string = render(request, 'shopping_list_pdf.html', {'elements': elements}).content.decode('utf-8')
+
+    css_url = static('css/shopping_list_styles.css')
+    css = CSS(css_url)
+
+    pdf_file = HTML(string=html_string).write_pdf(stylesheets=[css])
+
+    response = HttpResponse(pdf_file, content_type='application/pdf')
+    response['Content-Disposition'] = 'inline; filename="lista_zakupow.pdf"'
+    return response

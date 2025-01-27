@@ -1,4 +1,4 @@
-//add egredient through ajax and api
+//add ingredient through ajax and api
 document.getElementById('addListElementBtn').addEventListener('click', function () {
     let name = document.getElementById('listElementName').value;
     let amount = document.getElementById('listElementAmount').value;
@@ -34,22 +34,22 @@ document.getElementById('addListElementBtn').addEventListener('click', function 
                 <td>${data.list_element.jednostka}</td>
                 <td>
                     <input type="checkbox" 
-                       name="list_element_${data.list_element.idElement}" 
-                       id="list_element_${data.list_element.idElement}" 
-                       class="element-checkbox list-element-${data.list_element.idElement}">
+                       name="element_${data.list_element.idElement}" 
+                       id="element_${data.list_element.idElement}" 
+                       class="element-checkbox element-${data.list_element.idElement}">
                 </td>
                 <td><a href="#" class="delete-btn" data-id="${data.list_element.idElement}">Usuń</a></td>
             </tr>`;
             document.querySelector("tbody").insertAdjacentHTML('beforeend', newRow);
 
-            // Dodanie obsługi checkboxa dla nowego elementu
-            attachCheckboxListener(document.getElementById(`list_element_${data.list_element.idElement}`));
+            attachCheckboxListener(document.getElementById(`element_${data.list_element.idElement}`));
         }
     })
     .catch(error => console.error("Błąd:", error));
 });
 
-// Zdarzenie kliknięcia do usuwania elementów (delegacja zdarzeń)
+
+//remove element from list
 document.querySelector("tbody").addEventListener('click', function (event) {
     if (event.target && event.target.classList.contains('delete-btn')) {
         event.preventDefault();
@@ -67,18 +67,22 @@ document.querySelector("tbody").addEventListener('click', function (event) {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                event.target.closest('tr').remove(); // Usuwamy wiersz
+                event.target.closest('tr').remove();
             }
         })
         .catch(error => console.error("Błąd:", error));
     }
 });
 
-// Funkcja do wysyłania AJAXa przy zaznaczaniu checkboxa
+
+
+//checkbox update
 function attachCheckboxListener(checkbox) {
     checkbox.addEventListener('change', function () {
-        let listElementId = this.getAttribute('id').split('_')[2];
+        console.log("EEEE");
+        let listElementId = this.getAttribute('id').split('_')[1];
         let isChecked = this.checked;
+        console.log(listElementId, isChecked);
 
         fetch(updateListElementStatusUrl, {
             method: "POST",
@@ -101,6 +105,8 @@ function attachCheckboxListener(checkbox) {
     });
 }
 
-document.querySelectorAll('.list-element-checkbox').forEach(checkbox => {
+
+//in the beginning, iterate through all checkboxes and attach the listeners
+document.querySelectorAll('.element-checkbox').forEach(checkbox => {
     attachCheckboxListener(checkbox);
 });

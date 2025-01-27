@@ -70,13 +70,14 @@
                 <p class="content-text">Zaawansowane dodawanie składników</p>
                 <div class="buttons">
                     <a href="{% url 'add_from_recipe' pk=shopping_list.pk %}"><button class="action-button" >Dodaj z przepisu</button></a>
-                    <button  class="action-button">Dodaj z jadłospisu</button>
+                    <a href="{% url 'add_from_diet' pk=shopping_list.pk %}"><button class="action-button">Dodaj z jadłospisu</button></a>
                 </div>
             </div>
             <div class="block">
                 <p class="content-text">Eksport</p>
                 <div class="buttons">
-                    <button  class="action-button">Eksportuj listę</button>
+                    <a href="{% url 'export-shopping-list'%}" target="_blank"><button class="action-button">Eksportuj listę</button></a>
+                    
                 </div>
                 
             </div>

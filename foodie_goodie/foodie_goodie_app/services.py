@@ -15,7 +15,7 @@ def add_ingredients_to_shopping_list(shopping_list_id, ingredient_ids):
         #if not, add the ingredient to the shopping list
         
         for element in list_elements:
-            if element.nazwaElementu.lower() == ingredient.nazwaSkladnika.lower():
+            if element.nazwaElementu.lower() == ingredient.nazwaSkladnika.lower(): #can be more optimal with iexact
                 print("element already on the list")
                 element.ilosc += ingredient.ilosc
                 element.save()
