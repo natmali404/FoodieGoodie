@@ -9,19 +9,25 @@ from ..forms.comment_form import KomentarzForm
 logged_user=Uzytkownik.objects.filter(idUzytkownik=1).first()
 
 def przepis_detail(request, id):
-    #print("przepis_detils")
-
-    # Pobierz przepis na podstawie ID
+ 
     przepis = get_object_or_404(Przepis, idPrzepis=id)
-    # Pobierz składniki przypisane do przepisu
+  
     skladniki_przepisu = SkladnikPrzepisu.objects.filter(przepis=przepis)
     skladniki=[item.skladnik for item in skladniki_przepisu]
+
     komentarze=KomentarzePrzepisu.objects.filter(przepis=przepis)
-    ocena= OcenyPrzepisu.objects.filter(oceniajacy=logged_user).first() 
+    ocena= OcenyPrzepisu.objects.filter(oceniajacy=logged_user,przepis=przepis).first()
     if ocena:
         ocena=ocena.wartosc
     else:
         ocena=0
+    oceny = [elem.wartosc for elem in OcenyPrzepisu.objects.filter(przepis=przepis)]
+    if oceny:  
+        srednia = sum(oceny) / len(oceny)
+        srednia = round(srednia, 2) 
+    else:
+        srednia = 0
+
     liczby = range(1, 21)  # Lista liczb od 1 do 20
     porcja=przepis.porcja
     error=""
@@ -48,7 +54,9 @@ def przepis_detail(request, id):
         'error':error,
         'ocena':ocena,
         'obserwowanie':obserwowanie,
-        'form': form
+        'form': form,
+        'srednia':srednia,
+        'logged_user':logged_user
     })
 
 def przepis_detail_stars(request,id):
@@ -97,4 +105,12 @@ def obserwuj_przepis(request, id):
         Obserwowanie.objects.create(przepis=przepis, uzytkownik=uzytkownik)
 
     # Przekierowanie z powrotem do strony przepisu
+    return redirect('recipe_detail', id=przepis.idPrzepis)
+
+def usun_komentarz(request, idrecipe, idcomment):
+    przepis = get_object_or_404(Przepis, idPrzepis=idrecipe)
+    komentarz = get_object_or_404(KomentarzePrzepisu, idKomentarz=idcomment, przepis=przepis)
+    if komentarz.uzytkownik == logged_user:
+        komentarz.delete()
+    
     return redirect('recipe_detail', id=przepis.idPrzepis)

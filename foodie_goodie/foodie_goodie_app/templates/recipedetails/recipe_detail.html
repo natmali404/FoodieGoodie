@@ -25,7 +25,22 @@
                     <span style="font-size: 0.9rem;"> Opublikowano: {{ przepis.dataPublikacji }}</span>
                 </p>
             </div>   
-                    
+            
+            {% if obserwowanie == True  %}
+            <img src="{% static 'img/heart.avif' %}" alt="Time Icon" class="icon" >
+            {% endif %}   
+
+            {% if srednia > 0  %}
+            <p>
+                <img src="{% static 'img/star.webp' %}" alt="Time Icon" class="icon" >
+                <span>{{ srednia }}<span>
+            </p>
+            {% else %}
+            <p>
+                <img src="{% static 'img/star.webp' %}" alt="Time Icon" class="icon" >
+                <span>brak ocen</span>
+            </p>
+            {% endif %}   
                     
                 <p>
                     <img src="{% static 'img/time.jfif' %}" alt="Time Icon" class="icon" >
@@ -134,6 +149,9 @@
             <div class="komentarz-tresc">
                 <p class="autor-data">
                     <strong>{{ komentarz.uzytkownik.nazwaUzytkownika }}</strong> - {{ komentarz.dataKomentarza }}
+                    {% if komentarz.uzytkownik == logged_user %}
+                    <a href="{% url 'remove_comment' komentarz.przepis.idPrzepis komentarz.idKomentarz %}" class="usun-link">Usuń</a>
+                {% endif %}
                 </p>
                 <p class="tresc">
                     {{ komentarz.trescKomentarza }}
