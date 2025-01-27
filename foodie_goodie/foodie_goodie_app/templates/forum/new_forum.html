@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %} Wątek {% endblock %}
+{% load static %}
+<!-- This applies custom stylesheets for each module/template. -->
+{% block template_stylesheets %}
+<link rel="stylesheet" href="{% static 'css/forum_style.css' %}">
+{% endblock %}
+
+{% block content %}
+<a href="{% url 'forum_all' %}">Powrót do forum</a>
+<h2 class="forum-title">Nowy wątek</h2>
+
+<form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="thread-form">
+        {{ thread_form.tytulForum }}
+        {{ post_form.trescPost }}
+        {{ post_form.obrazek }}
+        <button type="submit" class="submit-btn">Utwórz wątek</button>
+    </div>
+</form>
+
+
+{% endblock %}
+
