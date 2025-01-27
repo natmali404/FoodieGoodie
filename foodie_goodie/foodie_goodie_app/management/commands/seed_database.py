@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-from foodie_goodie_app.models import Forum, Post, Uzytkownik, ListaZakupow, Przepis, Skladnik, Jednostka, ElementListy
+from foodie_goodie_app.models import Forum, Post, Uzytkownik, ListaZakupow, Przepis, Skladnik, Jednostka, ElementListy, Jadlospis, JadlospisPrzepis
 from datetime import date
 
 class Command(BaseCommand):
@@ -205,6 +205,9 @@ class Command(BaseCommand):
                 )
 
         
+        
+        #seed forums
+        
         forums = [
             {
            "tytulForum": "Jakie znacie zdrowe przepisy?",
@@ -283,6 +286,39 @@ class Command(BaseCommand):
                     glosy = post["glosy"]
 
                 )
+                
+                
+                
+                
+        # seed diets
+        
+        user = Uzytkownik.objects.get(idUzytkownik=1)
+        
+        jadlospis1 = Jadlospis.objects.create(
+                nazwa = f"Przykładowy jadłospis",
+                autor = user,
+                dataUtworzenia = date.today()
+            )
+        for i in range(3):
+            JadlospisPrzepis.objects.create(
+                jadlospis = jadlospis1,
+                przepis = Przepis.objects.get(idPrzepis=i+1),
+                dzienTygodnia = i,
+                godzina = i
+            )
+            
+        jadlospis2 = Jadlospis.objects.create(
+                nazwa = f"Jadłospis bezglutenowy",
+                autor = user,
+                dataUtworzenia = date.today()
+            )
+        for i in range(3,6):
+            JadlospisPrzepis.objects.create(
+                jadlospis = jadlospis2,
+                przepis = Przepis.objects.get(idPrzepis=i+1),
+                dzienTygodnia = i,
+                godzina = i
+            )        
 
         
         

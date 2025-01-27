@@ -72,7 +72,7 @@ class Post(models.Model):
     dataDodaniaPostu = models.DateTimeField(auto_now_add=True)
     forum = models.ForeignKey(Forum, on_delete=models.CASCADE, related_name="posty")
     autor = models.ForeignKey(Uzytkownik, on_delete=models.CASCADE)
-    glosy = models.IntegerField()
+    glosy = models.IntegerField(default=0)
     obrazek = models.ImageField(
         upload_to='img/upload/', 
         null=True, 

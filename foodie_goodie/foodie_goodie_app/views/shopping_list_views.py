@@ -7,7 +7,6 @@ from ..forms.shopping_list_form import ShoppingListForm
 from ..services import add_ingredients_to_shopping_list
 
 from django.http import HttpResponse
-from weasyprint import HTML, CSS
 from django.templatetags.static import static
 
 
@@ -164,16 +163,16 @@ class AddFromDietView(ListView):
     
 #pdf export
 
-def lista_zakupow_pdf(request):
+def export_shopping_list(request):
     elements = ElementListy.objects.all()
 
-    html_string = render(request, 'shopping_list_pdf.html', {'elements': elements}).content.decode('utf-8')
+    # html_string = render(request, 'shopping_list_pdf.html', {'elements': elements}).content.decode('utf-8')
 
-    css_url = static('css/shopping_list_styles.css')
-    css = CSS(css_url)
+    # css_url = static('css/shopping_list_styles.css')
+    # css = CSS(css_url)
 
-    pdf_file = HTML(string=html_string).write_pdf(stylesheets=[css])
+    # pdf_file = HTML(string=html_string).write_pdf(stylesheets=[css])
 
-    response = HttpResponse(pdf_file, content_type='application/pdf')
-    response['Content-Disposition'] = 'inline; filename="lista_zakupow.pdf"'
-    return response
+    # response = HttpResponse(pdf_file, content_type='application/pdf')
+    # response['Content-Disposition'] = 'inline; filename="lista_zakupow.pdf"'
+    return redirect('shopping_list_all')
