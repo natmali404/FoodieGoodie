@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-from foodie_goodie_app.models import Uzytkownik, ListaZakupow, Przepis, Skladnik, Jednostka, ElementListy
+from foodie_goodie_app.models import Forum, Post, Uzytkownik, ListaZakupow, Przepis, Skladnik, Jednostka, ElementListy
 from datetime import date
 
 class Command(BaseCommand):
@@ -8,9 +8,27 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         # user
         print("Seeding users...")
-        uzytkownik = Uzytkownik.objects.create(
+        user_1 = Uzytkownik.objects.create(
             nazwaUzytkownika="test_user",
             email="testuser@example.com",
+            haslo="password123"
+        )
+
+        user_2 = Uzytkownik.objects.create(
+            nazwaUzytkownika="marmolada45",
+            email="testuser2@example.com",
+            haslo="password123"
+        )
+
+        user_3 = Uzytkownik.objects.create(
+            nazwaUzytkownika="JaTuTylkoCzytam",
+            email="testuser3@example.com",
+            haslo="password123"
+        )
+
+        user_4 = Uzytkownik.objects.create(
+            nazwaUzytkownika="sigma",
+            email="testuser4@example.com",
             haslo="password123"
         )
         
@@ -31,12 +49,12 @@ class Command(BaseCommand):
         print("Seeding lists...")
         lista_1 = ListaZakupow.objects.create(
             nazwaListy="Tygodniowe zakupy",
-            autor=uzytkownik
+            autor=user_1
         )
 
         lista_2 = ListaZakupow.objects.create(
             nazwaListy="Urodziny Natalki",
-            autor=uzytkownik
+            autor=user_1
         )
         
         element_11 = ElementListy.objects.create(
@@ -71,7 +89,6 @@ class Command(BaseCommand):
 
         # recipes with ingredients
         print("Seeding recipes...")
-        user = Uzytkownik.objects.get(idUzytkownik=1)
 
         przepisy = [
             {
@@ -172,7 +189,7 @@ class Command(BaseCommand):
 
         for przepis_data in przepisy:
             przepis = Przepis.objects.create(
-                autorPrzepisu=user,
+                autorPrzepisu=user_1,
                 nazwaPrzepisu=przepis_data["nazwa"],
                 instrukcje=przepis_data["instrukcje"],
                 dataPublikacji=date.today()
@@ -185,6 +202,86 @@ class Command(BaseCommand):
                     przepis=przepis,
                     ilosc=ilosc,
                     jednostka=jednostka
+                )
+
+        
+        forums = [
+            {
+           "tytulForum": "Jakie znacie zdrowe przepisy?",
+           "uzytkownik": user_1,
+           "posts": [
+               {
+                   "trescPost": "Jak w tytule. Prosze podzielcie sie.",
+                   "dataDodaniaPostu": "2024-01-25 16:15:00",
+                   "autor": user_1,
+                   "glosy": 2,
+               },
+               {
+                   "trescPost": "Ja lubie placki z bananow i jajek",
+                    "dataDodaniaPostu": "2024-01-25 16:16:00",
+                   "autor": user_2,
+                   "glosy": 8,
+               },
+               {
+                   "trescPost": "TYLKO TYLE WYSTARCZY???? WOW",
+                    "dataDodaniaPostu": "2024-01-25 16:17:00",
+                   "autor": user_1,
+                   "glosy": -1,
+               },
+               {
+                   "trescPost": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+                    "dataDodaniaPostu": "2024-01-25 16:18:00",
+                   "autor": user_2,
+                   "glosy": 20,
+               }
+            ]    
+            },
+        {
+            "tytulForum": "Najlepsze ćwiczenia na siłowni",
+            "uzytkownik": user_2,
+            "posts": [
+                {
+                    "trescPost": "Jakie są wasze ulubione ćwiczenia na siłowni?",
+                    "dataDodaniaPostu": "2024-01-24 09:30:00",
+                    "autor": user_2,
+                    "glosy": 5
+                },
+                {
+                    "trescPost": "Przysiady to podstawa! Zawsze robię 4 serie po 12 powtórzeń",
+                    "dataDodaniaPostu": "2024-01-24 10:15:00",
+                    "autor": user_3,
+                    "glosy": 12
+                },
+                {
+                    "trescPost": "Ktoś wie coś o treningu na mięśnie pleców?",
+                    "dataDodaniaPostu": "2024-01-24 11:00:00",
+                    "autor": user_1,
+                    "glosy": 3
+                },
+                {
+                    "trescPost": "Martwica to król wszystkich ćwiczeń! Zmienia sylwetkę całkowicie",
+                    "dataDodaniaPostu": "2024-01-24 12:45:00",
+                    "autor": user_4,
+                    "glosy": 15
+                }
+            ]
+            }
+        ]
+
+        for forum in forums:
+            new_forum = Forum.objects.create(
+                tytulForum = forum["tytulForum"],
+                uzytkownik = forum["uzytkownik"]
+            )
+
+            for post in forum["posts"]:
+                Post.objects.create(
+                    trescPost = post["trescPost"],
+                    dataDodaniaPostu = post["dataDodaniaPostu"],
+                    forum = new_forum,
+                    autor = post["autor"],
+                    glosy = post["glosy"]
+
                 )
 
         

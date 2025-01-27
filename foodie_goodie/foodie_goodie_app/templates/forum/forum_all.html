@@ -8,12 +8,22 @@
 
 {% block content %}
 <h2>Przeglądaj forum</h2>
-<a href="#"><button>Utwórz nowy wątek</button></a>
-<ul>
+<a href="{% url 'new_forum' %}"><button>Utwórz nowy wątek</button></a>
+<div class="forum-container">
     {% for forum in forums %}
-        <li>
-            {{forum.tytulForum}} - autor: {{forum.uzytkownik}}
-        </li>
+    <a href="{% url 'forum_detail' pk=forum.idForum %}">
+    <div class="forum-list-element">
+        <div class="forum-title">
+            <p>{{forum.tytulForum}}</p>
+            <p>autor: {{forum.uzytkownik}}</p>
+        </div>
+        <div class="forum-date">{{ forum.data_zalozenia|date:"Y-m-d H:i" }}</div>
+        <div class="forum-answer-count">
+            <img src="{% static 'img/message-bubble-icon.png' %}" alt="">
+            <p>{{ forum.post_count }}</p>
+        </div>
+    </div>
+    </a>
     {% endfor %}
-</ul>
+</div>
 {% endblock %}

@@ -1,6 +1,7 @@
 from django.db import models
 from django.core.validators import FileExtensionValidator
 from django.utils.timezone import now
+from django.db.models import Min
 
 class Uzytkownik(models.Model):
     idUzytkownik = models.AutoField(primary_key=True)
@@ -59,7 +60,10 @@ class Forum(models.Model):
     uzytkownik = models.ForeignKey(Uzytkownik, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.tytulPost
+        return self.tytulForum
+    def data_zalozenia(self):
+        pierwsza_data = self.posty.aggregate(Min('dataDodaniaPostu'))['dataDodaniaPostu__min']
+        return pierwsza_data
 
 
 class Post(models.Model):
@@ -70,7 +74,7 @@ class Post(models.Model):
     autor = models.ForeignKey(Uzytkownik, on_delete=models.CASCADE)
     glosy = models.IntegerField()
     obrazek = models.ImageField(
-        upload_to='posty_obrazki/', 
+        upload_to='img/upload/', 
         null=True, 
         blank=True, 
         validators=[FileExtensionValidator(['png', 'jpg', 'jpeg', 'gif'])]

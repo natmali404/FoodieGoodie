@@ -28,14 +28,12 @@ header {
 }
 
 .left {
-    background-color: #7b9a76;
     box-sizing: border-box;
     width: 70%;
     padding: 2vw;
 }
 
 .right {
-    background-color: #CEE0CC;
     box-sizing: border-box;
     width: 30%;
 }
