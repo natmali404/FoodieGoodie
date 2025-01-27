@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %} Usuń Post {% endblock %}
+
+{% block content %}
+<h2>Na pewno chcesz usunąć ten post?</h2>
+
+<p>{{ post.trescPost }}</p>
+<p>Opublikowany przez: {{ post.autor }}</p>
+
+
+{% if posts_count == 1 %}
+<p>To jest jedyny post w tym wątku. Cały wątek zostanie usunięty.</p>
+{% endif %}
+
+<form method="POST">
+    {% csrf_token %}
+
+    <button type="submit">Usuń</button>
+</form>
+
+
+
+<a href="{% url 'forum_detail' pk=post.forum.pk %}">Powrót do forum</a>
+{% endblock %}

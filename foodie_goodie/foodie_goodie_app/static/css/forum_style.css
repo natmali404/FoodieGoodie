@@ -17,8 +17,22 @@
     align-items: center;
 }
 
+.forum-date {
+    flex: 2;
+}
+
+.forum-answer-count {
+    flex: 1;
+}
+
 .forum-answer-count > img {
     width: 2em;
+}
+
+.forum-title {
+    margin: 2vh;
+    font-weight: bold;
+    flex: 6;
 }
 
 .forum-title > p:nth-of-type(1) {
@@ -36,7 +50,7 @@
 
 /* forum detail - post */
 
-.forum-title {
+.forum-name {
     margin: 2vh;
     font-weight: bold;
 }

@@ -8,6 +8,14 @@ from ..services import add_ingredients_to_shopping_list
 
 from django.http import HttpResponse
 from django.templatetags.static import static
+from reportlab.lib.pagesizes import letter
+from reportlab.pdfgen import canvas
+from reportlab.lib import colors
+from reportlab.pdfbase.ttfonts import TTFont
+from reportlab import pdfbase
+from reportlab.pdfbase import pdfmetrics
+from django.conf import settings
+import os
 
 
 TEST_USER_ID = 1
@@ -163,16 +171,42 @@ class AddFromDietView(ListView):
     
 #pdf export
 
-def export_shopping_list(request):
-    elements = ElementListy.objects.all()
+def export_shopping_list(request, pk):
+    shopping_list = ListaZakupow.objects.get(pk=pk)
+    elements = ElementListy.objects.filter(lista=shopping_list)
 
-    # html_string = render(request, 'shopping_list_pdf.html', {'elements': elements}).content.decode('utf-8')
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="shopping_list.pdf"'
 
-    # css_url = static('css/shopping_list_styles.css')
-    # css = CSS(css_url)
+    p = canvas.Canvas(response, pagesize=letter)
+    width, height = letter
 
-    # pdf_file = HTML(string=html_string).write_pdf(stylesheets=[css])
+    font_path = os.path.join(settings.BASE_DIR, 'foodie_goodie_app', 'static', 'fonts', 'DejaVuSans.ttf')
+    pdfmetrics.registerFont(TTFont('DejaVuSans', font_path))
+    p.setFont("DejaVuSans", 12)
 
-    # response = HttpResponse(pdf_file, content_type='application/pdf')
-    # response['Content-Disposition'] = 'inline; filename="lista_zakupow.pdf"'
-    return redirect('shopping_list_all')
+
+    p.drawString(100, height - 100, f"Lista Zakupów - {shopping_list.nazwaListy}")
+
+    y_position = height - 150
+
+    for element in elements:
+        checkbox_x = 100
+        checkbox_y = y_position - 2
+
+        p.rect(checkbox_x, checkbox_y, 12, 12)
+
+        if element.zaznaczony:
+            p.rect(checkbox_x + 1, checkbox_y + 1, 11, 11, fill=1)
+
+
+        item_text = f"{element.nazwaElementu} {element.ilosc} {element.jednostka.nazwaJednostki}"
+        
+        p.drawString(checkbox_x + 20, y_position, item_text)
+
+        y_position -= 20
+
+    p.showPage()
+    p.save()
+    
+    return response

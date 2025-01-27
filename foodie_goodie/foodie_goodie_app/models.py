@@ -61,6 +61,7 @@ class Forum(models.Model):
 
     def __str__(self):
         return self.tytulForum
+    
     def data_zalozenia(self):
         pierwsza_data = self.posty.aggregate(Min('dataDodaniaPostu'))['dataDodaniaPostu__min']
         return pierwsza_data

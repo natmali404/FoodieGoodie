@@ -5,7 +5,7 @@ from django.urls import reverse_lazy
 from ..models import Uzytkownik, Forum, Post
 from django.db.models import Count, Min
 from ..forms.post_form import PostForm, ThreadForm
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, TemplateView, View
 
 
@@ -107,3 +107,50 @@ class CreateThreadView(FormView):
         
         return self.render_to_response({'thread_form': thread_form, 'post_form': post_form})
 
+
+class EditPostView(UpdateView):
+    model = Post
+    fields = ['trescPost', 'obrazek']
+    template_name = 'forum/edit_post.html'
+    context_object_name = 'post'
+
+    def get_success_url(self):
+        return reverse_lazy('forum_detail', kwargs={'pk': self.object.forum.pk})
+    
+    def get_object(self, queryset=None):
+        post = get_object_or_404(Post, pk=self.kwargs['pk'])
+        return post
+    
+    
+class DeletePostView(DeleteView):
+    model = Post
+    template_name = 'forum/delete_post.html'
+    context_object_name = 'post'
+    success_url = reverse_lazy('forum_all')
+
+    def get_object(self, queryset=None):
+        return get_object_or_404(Post, pk=self.kwargs['pk'])
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        post = self.get_object()
+        affected_forum = post.forum
+
+        posts_count = Post.objects.filter(forum=affected_forum).count()
+        
+        context['posts_count'] = posts_count
+        
+        return context
+
+    def post(self, request, *args, **kwargs):
+        post = self.get_object()
+        affected_forum = post.forum
+
+        post.delete()
+        posts = Post.objects.filter(forum=affected_forum)
+        
+        if posts.count() == 0:
+            affected_forum.delete()
+
+        return HttpResponseRedirect(self.success_url)

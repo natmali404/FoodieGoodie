@@ -2,7 +2,7 @@ from django.urls import path
 from .views import main_views
 from .views.shopping_list_views import ShoppingListAllView, ShoppingListCreateView, ShoppingListDetailView, ShoppingListUpdateView, ShoppingListDeleteView, AddFromRecipeView, AddFromDietView, ConfirmIngredientsView, export_shopping_list
 from .views.api_views import add_list_element, delete_list_element, update_list_element_status
-from .views.forum_views import ForumAllView
+from .views.forum_views import ForumAllView, EditPostView, DeletePostView
 from .views.shopping_list_views import ShoppingListAllView, ShoppingListCreateView, ShoppingListDetailView, ShoppingListUpdateView, ShoppingListDeleteView, AddFromRecipeView, ConfirmIngredientsView
 from .views.forum_views import ForumAllView, ForumDetailView, VotePostView, CreateThreadView
 from .swagger import schema_view
@@ -31,11 +31,13 @@ urlpatterns = [
     path('shopping-lists/<int:pk>/add-from-diet/', AddFromDietView.as_view(), name='add_from_diet'),
 
     #export
-    path('shopping-list/export/', export_shopping_list, name='export-shopping-list'),
+    path('shopping-list/<int:pk>/export/', export_shopping_list, name='export-shopping-list'),
 
     #forum
     path('forums/', ForumAllView.as_view(), name='forum_all'),
     path('forums/<int:pk>/', ForumDetailView.as_view(), name='forum_detail'),
     path('vote-post/', VotePostView.as_view(), name='vote_post'),
     path('new-forum/', CreateThreadView.as_view(), name='new_forum'),
+    path('post/<int:pk>/edit/', EditPostView.as_view(), name='edit_post'),
+    path('post/<int:pk>/delete/', DeletePostView.as_view(), name='delete_post'),
 ]

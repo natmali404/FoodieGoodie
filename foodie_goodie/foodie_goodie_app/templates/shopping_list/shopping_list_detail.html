@@ -76,9 +76,11 @@
             <div class="block">
                 <p class="content-text">Eksport</p>
                 <div class="buttons">
-                    <a href="{% url 'export-shopping-list'%}" target="_blank"><button class="action-button">Eksportuj listę</button></a>
-                    
+                    <a href="{% url 'export-shopping-list' pk=shopping_list.pk %}" target="_blank">
+                        <button class="action-button">Eksportuj listę</button>
+                    </a>
                 </div>
+                
                 
             </div>
 
