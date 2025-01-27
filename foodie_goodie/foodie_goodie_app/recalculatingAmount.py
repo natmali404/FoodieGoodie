@@ -1,6 +1,9 @@
 
 
 def recalculate(ingredients,eatvalues,oldportion,newportion):
+    if oldportion<=0 or newportion<=0:
+        raise ValueError("Wielkość porcji musi być dodatnia")
+
     multiplier=newportion/oldportion
     newAmounts=[]
     for ingr in ingredients:

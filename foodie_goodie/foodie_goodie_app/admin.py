@@ -9,7 +9,7 @@ admin.site.register(SkladnikPrzepisu)
 admin.site.register(Jednostka)
 admin.site.register(OcenyPrzepisu)
 admin.site.register(KomentarzePrzepisu)
-
+admin.site.register(Uzytkownik)
 
 
 
