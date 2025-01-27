@@ -1,22 +1,18 @@
-
-
 def recalculate(ingredients,eatvalues,oldportion,newportion):
     if oldportion<=0 or newportion<=0:
         raise ValueError("Wielkość porcji musi być dodatnia")
 
     multiplier=newportion/oldportion
-    newAmounts=[]
+    new_amounts=[]
     for ingr in ingredients:
         amount=ingr.ilosc*multiplier
         if amount<ingr.jednostka.minimalnaWartosc:
             raise ValueError(f"Nie można przeliczyc {ingr.nazwaSkladnika}")
-        else:
-            amount=round(amount/ingr.jednostka.minimalnaWartosc)*ingr.jednostka.minimalnaWartosc
-        newAmounts.append(amount)
-    
+        amount=round(amount/ingr.jednostka.minimalnaWartosc)*ingr.jednostka.minimalnaWartosc
+        new_amounts.append(amount)
     i=0
     for ingr in ingredients:
-        ingr.ilosc=newAmounts[i]
+        ingr.ilosc=new_amounts[i]
         i+=1
 
     for k in eatvalues:

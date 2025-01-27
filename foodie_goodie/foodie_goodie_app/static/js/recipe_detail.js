@@ -12,13 +12,14 @@ var countStars = function () {
                 "X-CSRFToken": csrfToken, // Dodaj CSRF token do nagłówka
             },
             body: JSON.stringify({ rating: starValue }), // Prześlij ocenę w treści
-        }).then(response => response.json())
+        })
+        .then(response => response.json())
         .then(data => window.location.href = window.location.href.replace('/stars', '') )
+        
      }
     };
 
-    document.querySelector('.stars').addEventListener('click', countStars)
-
+document.querySelector('.stars').addEventListener('click', countStars)
 
 function printContent() {
     // Pobieramy zawartość kontenera

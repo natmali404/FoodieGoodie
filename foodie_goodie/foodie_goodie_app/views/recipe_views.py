@@ -4,7 +4,7 @@ from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 
 from ..models import Przepis,SkladnikPrzepisu,Uzytkownik,OcenyPrzepisu,KomentarzePrzepisu,Obserwowanie
-from ..recalculatingAmount import recalculate
+from ..recalculating_amount import recalculate
 from ..forms.comment_form import KomentarzForm
 logged_user=Uzytkownik.objects.filter(idUzytkownik=1).first()
 
@@ -63,9 +63,8 @@ def przepis_detail_stars(request,id):
     body = json.loads(request.body)
     przepis = get_object_or_404(Przepis, idPrzepis=id)
     ocena = int(body.get('rating',0))
-    #print(f"przepis_stars {przepis.nazwaPrzepisu}  {logged_user.nazwaUzytkownika}  {ocena}")
+    print(f"przepis_stars {przepis.nazwaPrzepisu}  {logged_user.nazwaUzytkownika}  {ocena}")
     if request.method == 'POST':
-        
         ocena, created = OcenyPrzepisu.objects.update_or_create(
             przepis=przepis,
             oceniajacy=logged_user,
@@ -74,6 +73,7 @@ def przepis_detail_stars(request,id):
  
         return JsonResponse({'message': 'Ocena została zapisana'}, status=200)
     return JsonResponse({'message': "Ten adres nie ma metody GET"}, status=400)   
+     
     
 
 def add_komentarz(request, id):

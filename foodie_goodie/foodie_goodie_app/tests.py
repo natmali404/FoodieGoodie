@@ -1,6 +1,6 @@
 from django.test import TestCase
 
-from foodie_goodie_app.recalculatingAmount import recalculate
+from foodie_goodie.foodie_goodie_app.recalculating_amount import recalculate
 from .models import Skladnik, Jednostka
 
 class RecalculateFunctionTest(TestCase):
@@ -28,19 +28,17 @@ class RecalculateFunctionTest(TestCase):
             )
         ]
 
-        # Tworzenie wartości odżywczych
         self.eatvalues = {"kalorie": 1200, "białko": 20, "tłuszcz": 10}
 
     def test_recalculate_multiply(self):
-        # Wywołanie funkcji z poprawnymi danymi
+
         recalculate(self.ingredients, self.eatvalues, oldportion=2, newportion=4)
 
-        # Sprawdzanie składników
+
         self.assertEqual(self.ingredients[0].ilosc, 400)  # Mąka
         self.assertEqual(self.ingredients[1].ilosc, 1000)  # Mleko
         self.assertEqual(self.ingredients[2].ilosc, 4)
 
-        # Sprawdzanie wartości odżywczych
         self.assertEqual(self.eatvalues["kalorie"], 2400)
         self.assertEqual(self.eatvalues["białko"], 40)
         self.assertEqual(self.eatvalues["tłuszcz"], 20)
