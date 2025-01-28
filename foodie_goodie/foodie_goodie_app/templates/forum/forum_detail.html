@@ -7,7 +7,7 @@
 {% endblock %}
 
 {% block content %}
-<a href="{% url 'forum_all' %}">Powrót do forum</a>
+<div class="green-text back-btn"><a href="{% url 'forum_all' %}">← Powrót do forum</a></div>
 <h2 class="forum-name">{{forum.tytulForum}}</h2>
 <div class="post-container">
     {% for post in posts %}
@@ -26,7 +26,7 @@
             <img class="post-image" src="{{ post.obrazek.url }}" alt="post media">
             {% endif %}
             {% if post.autor.idUzytkownik == 1 %}
-            <div class="post-edit-delete"><p><a href="{% url 'edit_post' pk=post.pk %}">Edytuj</a> |  <a href="{% url 'delete_post' pk=post.pk %}">Usuń</a></p></div>
+            <div class="post-edit-delete"><p class="green-text"><a href="{% url 'edit_post' pk=post.pk %}">Edytuj</a> |  <a href="{% url 'delete_post' pk=post.pk %}">Usuń</a></p></div>
             {% endif %}
         </div>
     </div>

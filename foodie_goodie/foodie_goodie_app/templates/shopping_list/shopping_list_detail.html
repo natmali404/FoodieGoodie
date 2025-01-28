@@ -8,7 +8,7 @@
 
 {% block content %}
 <header>
-    <h2 class="page-title">Lista zakupów</h2>
+    <h2 class="page-title">Lista zakupów - {{shopping_list_name}}</h2>
 </header>
 <main>
     <div class="content-container">
@@ -35,10 +35,10 @@
                 </tfoot>
                 <tbody>
                     {% for element in elements %}
-                    <tr>
-                        <td>{{ element.nazwaElementu }}</td>
-                        <td>{{ element.ilosc|floatformat:-2 }}</td>
-                        <td>{{ element.jednostka.nazwaJednostki }}</td>
+                    <tr data-name="{{ element.nazwaElementu }}" data-unit="{{ element.jednostka.nazwaJednostki }}">
+                        <td class="element-name">{{ element.nazwaElementu }}</td>
+                        <td class="element-amount">{{ element.ilosc|floatformat:-2 }}</td>
+                        <td class="element-unit">{{ element.jednostka.nazwaJednostki }}</td>
                         <td>
                             <input type="checkbox" 
                             name="element_{{ element.idElement }}" 
@@ -46,7 +46,7 @@
                             class="element-checkbox"
                             {% if element.zaznaczony %}checked{% endif %}>
                         </td>
-                        <td><a href="#" class="delete-btn" data-id="{{element.idElement}}">Usuń</a></td>
+                        <td><a href="#" class="delete-btn green-text" data-id="{{element.idElement}}">Usuń</a></td>
                     </tr>
                     {% endfor %}
                 </tbody>

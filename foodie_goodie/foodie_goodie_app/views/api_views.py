@@ -2,6 +2,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from ..models import ElementListy, Jednostka
 from ..serializers import ElementListySerializer
+from ..services import add_ingredients_to_shopping_list
 
 
 @api_view(['POST'])
@@ -11,17 +12,28 @@ def add_list_element(request, pk):
         ilosc = request.data.get('ilosc')
         jednostka_id = request.data.get('jednostka')
 
-        jednostka = Jednostka.objects.get(idJednostka=jednostka_id)
-        new_element = ElementListy.objects.create(
-            lista_id=pk,
-            nazwaElementu=nazwa,
-            ilosc=ilosc,
-            jednostka=jednostka
-        )
+        try:
+            jednostka = Jednostka.objects.get(idJednostka=jednostka_id)
+        except Jednostka.DoesNotExist:
+            return Response({"success": False, "error": "Nieprawidłowa jednostka."}, status=400)
 
-        serializer = ElementListySerializer(new_element)
-        print(serializer.data)
-        return Response({"success": True, "list_element": serializer.data})
+        existing_element = ElementListy.objects.filter(lista_id=pk, nazwaElementu__iexact=nazwa, jednostka=jednostka_id).first()
+
+        if existing_element:
+            existing_element.ilosc += float(ilosc)
+            existing_element.save()
+            serializer = ElementListySerializer(existing_element)
+            return Response({"success": True, "list_element": serializer.data})
+        else:
+            new_element = ElementListy.objects.create(
+                lista_id=pk,
+                nazwaElementu=nazwa,
+                ilosc=ilosc,
+                jednostka=jednostka
+            )
+            serializer = ElementListySerializer(new_element)
+            return Response({"success": True, "list_element": serializer.data})
+
 
 
 @api_view(['POST'])

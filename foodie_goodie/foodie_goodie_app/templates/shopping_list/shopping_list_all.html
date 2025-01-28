@@ -7,18 +7,28 @@
 {% endblock %}
 
 {% block content %}
-<h2>Moje listy zakupów</h2>
-<a href="{% url 'shopping_list_create' %}">+ Dodaj nową listę</a>
-<ul>
-    {% for list in lists %}
-        <li>
-            <a href="{% url 'shopping_list_detail' list.pk %}">{{ list.nazwaListy }}</a>
-            <a href="{% url 'shopping_list_update' list.pk %}">Edytuj</a>
-            <form method="post" action="{% url 'shopping_list_delete' list.pk %}" style="display:inline;">
-                {% csrf_token %}
-                <button type="submit">Usuń</button>
-            </form>
-        </li>
-    {% endfor %}
-</ul>
+<div class="all-lists">
+    <h2 class="page-title">Moje listy zakupów</h2>
+    <div class="centered-content">
+        <a href="{% url 'shopping_list_create' %}"><button class="action-button btn-width">+ Dodaj nową listę</button></a>
+    </div>
+    
+    <div class="unordered-list">
+            {% for list in lists %}
+                    <div class="unordered-list-element">
+                        <div class="unordered-list-element-left">
+                            <a class="highlighted-text green-text" href="{% url 'shopping_list_detail' list.pk %}">{{ list.nazwaListy }}</a>
+                        </div>
+                        <div class="unordered-list-element-right">
+                            <a href="{% url 'shopping_list_update' list.pk %}"><button class="manage-btn">Edytuj</button></a>
+                            <form method="post" action="{% url 'shopping_list_delete' list.pk %}" style="display:inline;">
+                            {% csrf_token %}
+                            <button class="manage-btn" type="submit">Usuń</button>
+                            </form>
+                        </div>
+                    </div> 
+            {% endfor %}
+    </div>
+</div>
+
 {% endblock %}

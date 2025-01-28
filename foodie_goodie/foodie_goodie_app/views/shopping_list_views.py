@@ -1,16 +1,13 @@
-from django.shortcuts import render, get_object_or_404, redirect
-from django.contrib.auth.decorators import login_required
+from django.shortcuts import redirect
 from django.urls import reverse_lazy
-from ..models import ListaZakupow, Uzytkownik, ElementListy, Przepis, Skladnik, Jednostka, Jadlospis, JadlospisPrzepis
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, TemplateView, View
+from ..models import ListaZakupow, Uzytkownik, ElementListy, Przepis, Jednostka, Jadlospis, JadlospisPrzepis
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, TemplateView
 from ..forms.shopping_list_form import ShoppingListForm
 from ..services import add_ingredients_to_shopping_list
 
 from django.http import HttpResponse
-from django.templatetags.static import static
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
-from reportlab.lib import colors
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab import pdfbase
 from reportlab.pdfbase import pdfmetrics
@@ -38,6 +35,7 @@ class ShoppingListDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         shopping_list = self.get_object()
         print(ElementListy.objects.all())
+        context['shopping_list_name'] = shopping_list.nazwaListy
         context['elements'] = ElementListy.objects.filter(lista=shopping_list)
         context['jednostki'] = Jednostka.objects.all()
         print(context['elements'])
@@ -51,7 +49,7 @@ class ShoppingListCreateView(CreateView):
     success_url = reverse_lazy('shopping_list_all')
 
     def form_valid(self, form):
-        form.instance.autor = Uzytkownik.objects.get(idUzytkownik=TEST_USER_ID)
+        form.instance.autor = Uzytkownik.objects.get(idUzytkownik=1)
         return super().form_valid(form)
     
 
@@ -89,9 +87,10 @@ class AddFromRecipeView(ListView):
         selected_recipes = request.POST.getlist('selected_recipes')
         request.session['selected_recipes'] = selected_recipes
         print("AddFromRecipeView - selected recipes:", selected_recipes)
+        
+        if not selected_recipes:
+            return redirect('shopping_list_detail', pk=self.kwargs['pk'])
 
-        ##################
-        # WAZNE JAK NIE MA ZAZNACZONYCH RECIPOW TO ODSWIEZ PO PROSTU ALBO COFNIJ DO WIDOKU DETAIL!!!!
         
         pk = self.kwargs.get('pk')
         return redirect('confirm_ingredients', pk=pk)
@@ -103,16 +102,9 @@ class ConfirmIngredientsView(TemplateView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        print("getting context data!")
-        
         selected_recipe_ids = self.request.session.get('selected_recipes', [])
-       
         selected_recipes = Przepis.objects.filter(idPrzepis__in=selected_recipe_ids)
-        
-        print("ConfirmIngredientsView - selected recipes:", selected_recipes)
-        
         context['selected_recipes'] = selected_recipes
-        
         return context
     
     def post(self, request, *args, **kwargs):
@@ -153,16 +145,14 @@ class AddFromDietView(ListView):
     def post(self, request, *args, **kwargs):
         selected_diets = request.POST.getlist('selected_diets')
         request.session['selected_diets' ] = selected_diets
-        print("AddFromDietView - selected diets:", selected_diets)
         
         #get all recipes ids from selected diets
         recipes = JadlospisPrzepis.objects.filter(jadlospis__in=selected_diets)
         selected_recipes = [str(recipe.przepis.idPrzepis) for recipe in recipes]
         request.session['selected_recipes' ] = selected_recipes
-        print("AddFromDietView - selected recipes:", selected_recipes)
 
-        ##################
-        # WAZNE JAK NIE MA ZAZNACZONYCH RECIPOW TO ODSWIEZ PO PROSTU ALBO COFNIJ DO WIDOKU DETAIL!!!!
+        if not selected_recipes:
+            return redirect('shopping_list_detail', pk=self.kwargs['pk'])
         
         pk = self.kwargs.get('pk')
         return redirect('confirm_ingredients', pk=pk)
