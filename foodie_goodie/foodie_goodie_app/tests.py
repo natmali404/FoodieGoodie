@@ -1,6 +1,6 @@
 from django.test import TestCase
 
-from foodie_goodie.foodie_goodie_app.recalculating_amount import recalculate
+from foodie_goodie_app.recalculating_amount import recalculate
 from .models import Skladnik, Jednostka
 
 class RecalculateFunctionTest(TestCase):
