@@ -23,6 +23,7 @@ pip install -r requirements.txt
 ```
 py manage.py makemigrations
 py manage.py migrate
+py manage.py seed_database
 ```
 7. If first launch, create the .env file in the project directory and update it with your database credentials:
 ```
