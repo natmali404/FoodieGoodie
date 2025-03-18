@@ -1,5 +1,5 @@
 # FoodieGoodie
- A project to practice usecase implementation.
+ A Django project to practice usecase implementation (a culinary website).
 
 ## Database setup
 In pgAdmin, create a database (eg. FoodieGoodie) and remember the credentials to use in .env file
